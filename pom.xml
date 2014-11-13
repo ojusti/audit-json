@@ -94,7 +94,7 @@
 				                  <artifactId>mongo-java-driver</artifactId>
 				                </artifactItem> -->
 							</artifactItems>
-							
+							<stripVersion>true</stripVersion>
 						</configuration>
 					</execution>
 				</executions>
