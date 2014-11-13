@@ -1,9 +1,16 @@
 package fr.infologic.vei.audit;
 
-public class AuditJsonObject
+import java.util.Collections;
+import java.util.Map;
+
+public class AuditJsonObject extends AuditJsonKey
 {
-    public String type;
-    public String key;
-    public Object metadata;
+    @Override
+    public String toString()
+    {
+        return String.format("AuditJsonObject [type=%s, key=%s, metadata=%s, objectAsJson=%s]",
+                             type, key, metadata, objectAsJson);
+    }
+    public Map<String, Object> metadata = Collections.emptyMap();
     public String objectAsJson;
 }
