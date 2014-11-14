@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.infologic.vei</groupId>
 	<artifactId>audit-json</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>Audit trail</name>
 	<description>Audit trail with Mongob and Json</description>
 	<properties>
