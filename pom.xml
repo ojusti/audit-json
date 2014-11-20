@@ -79,7 +79,7 @@
 									<artifactId>${project.artifactId}</artifactId>
 									<version>${project.version}</version>
 									<type>${project.packaging}</type>
-									<outputDirectory>${project.build.directory}/../../../dev/head/libraries/vei</outputDirectory>
+									<outputDirectory>${project.build.directory}/../../../dev/head/libraries</outputDirectory>
 								</artifactItem>
 								<artifactItem>
                                     <groupId>${project.groupId}</groupId>
@@ -87,7 +87,7 @@
                                     <version>${project.version}</version>
                                     <type>${project.packaging}</type>
                                     <classifier>sources</classifier>
-                                    <outputDirectory>${project.build.directory}/../../../dev/head/libraries-src/src/vei</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/../../../dev/head/libraries-src/src</outputDirectory>
                                 </artifactItem>
 								<!-- <artifactItem>
 				                  <groupId>org.mongodb</groupId>
