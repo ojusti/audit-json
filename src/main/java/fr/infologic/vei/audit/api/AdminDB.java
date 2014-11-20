@@ -1,6 +1,6 @@
-package fr.infologic.vei.audit;
+package fr.infologic.vei.audit.api;
 
-public interface DBAdmin
+public interface AdminDB
 {
     void drop();
     void close();

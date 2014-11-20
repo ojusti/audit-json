@@ -7,19 +7,23 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.mongodb.ServerAddress;
 
-import fr.infologic.vei.audit.AuditJsonDBDriver;
+import fr.infologic.vei.audit.api.AdminDB;
+import fr.infologic.vei.audit.api.AuditDriver.TrailObject;
+import fr.infologic.vei.audit.engine.TrailEngine;
+import fr.infologic.vei.audit.engine.TrailType;
+import fr.infologic.vei.audit.mongo.json.MongoJson;
 
 
-public class MongoDriver implements AuditJsonDBDriver
+public class MongoDB implements TrailEngine, AdminDB
 {
     private final MongoClient mongo;
     private final DB db;
-    public MongoDriver()
+    public MongoDB()
     {
         this(null, null, "audit");
     }
     
-    public MongoDriver(String host, Integer port, String db)
+    public MongoDB(String host, Integer port, String db)
     {
         try
         {
@@ -33,9 +37,9 @@ public class MongoDriver implements AuditJsonDBDriver
     }
 
     @Override
-    public AuditJsonType type(String type)
+    public TrailType type(String type)
     {
-        return new MongoType(db.getCollection(type));
+        return new TrailType(this, type);
     }
     
     @Override
@@ -78,9 +82,25 @@ public class MongoDriver implements AuditJsonDBDriver
             return false;
         }
     }
+
+    @Override
+    public MongoQuery query(String type, String key)
+    {
+        return new MongoQuery(db.getCollection(type), key);
+    }
+
+    @Override
+    public void save(TrailObject object)
+    {
+        db.getCollection(object.getType()).insert(MongoObject.convert(object));
+    }
+
+    @Override
+    public MongoJson convertContent(String object)
+    {
+        return MongoJson.fromString(object);
+    }
     
-
-
 //    private void addJson(String collection, String... json)
 //    {
 //        List<DBObject> objects = new ArrayList<>(json.length);

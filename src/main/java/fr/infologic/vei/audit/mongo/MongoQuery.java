@@ -1,7 +1,7 @@
 package fr.infologic.vei.audit.mongo;
 
-import static fr.infologic.vei.audit.mongo.MongoAuditJsonObject.KEY;
-import static fr.infologic.vei.audit.mongo.MongoAuditJsonObject.VERSION;
+import static fr.infologic.vei.audit.mongo.MongoObject.KEY;
+import static fr.infologic.vei.audit.mongo.MongoObject.VERSION;
 
 import java.util.List;
 
@@ -10,30 +10,29 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-import fr.infologic.vei.audit.AuditJsonObject;
-import fr.infologic.vei.audit.AuditJsonRecordQuery;
+import fr.infologic.vei.audit.api.AuditDriver.TrailQuery;
 
-class MongoAuditQuery implements AuditJsonRecordQuery
+class MongoQuery implements TrailQuery
 {
     private final DBCollection collection;
     private final String key;
 
-    MongoAuditQuery(DBCollection collection, String key)
+    MongoQuery(DBCollection collection, String key)
     {
         this.collection = collection;
         this.key = key;
     }
 
     @Override
-    public AuditJsonObject last()
+    public MongoObject last()
     {
-        return MongoAuditJsonObject.object(collection.getName(), _last());
+        return MongoObject.object(collection.getName(), _last());
     }
     
     @Override
-    public List<AuditJsonObject> all()
+    public List<MongoObject> all()
     {
-        return MongoAuditJsonObject.list(collection.getName(), trace().sort(asc(VERSION)));
+        return MongoObject.list(collection.getName(), trace().sort(asc(VERSION)));
     }
 
     DBObject _last()

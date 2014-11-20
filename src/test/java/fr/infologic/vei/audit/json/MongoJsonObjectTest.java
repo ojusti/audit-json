@@ -1,4 +1,4 @@
-package fr.infologic.vei.audit.diff;
+package fr.infologic.vei.audit.json;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,8 +9,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import fr.infologic.vei.audit.mongo.json.MongoJson;
+
 @RunWith(Parameterized.class)
-public class JsonObjectTest
+public class MongoJsonObjectTest
 {
     @Parameters
     public static Collection<Object[]> data() 
@@ -42,13 +44,13 @@ public class JsonObjectTest
        return Arrays.asList((Object[][]) data);    
     }
 
-    private JsonObject original, patch, result;
+    private MongoJson original, patch, result;
 
-    public JsonObjectTest(String original, String patch, String result) 
+    public MongoJsonObjectTest(String original, String patch, String result) 
     {
-        this.original = JsonObject.fromString(original);
-        this.patch = JsonObject.fromString(patch);
-        this.result = JsonObject.fromString(result);
+        this.original = MongoJson.fromString(original);
+        this.patch = MongoJson.fromString(patch);
+        this.result = MongoJson.fromString(result);
     }
     
     @Test

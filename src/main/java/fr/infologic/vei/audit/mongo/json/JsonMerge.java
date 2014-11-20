@@ -1,4 +1,4 @@
-package fr.infologic.vei.audit.diff;
+package fr.infologic.vei.audit.mongo.json;
 
 import java.util.Map;
 

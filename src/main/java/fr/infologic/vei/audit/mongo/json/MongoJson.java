@@ -1,17 +1,19 @@
-package fr.infologic.vei.audit.diff;
+package fr.infologic.vei.audit.mongo.json;
 
 import org.bson.BasicBSONObject;
 
 import com.mongodb.util.JSON;
 
-public class JsonObject
+import fr.infologic.vei.audit.api.AuditDriver.Content;
+
+public class MongoJson implements Content
 {
     private BasicBSONObject object;
-    public static JsonObject fromString(String objectAsJson)
+    public static MongoJson fromString(String objectAsJson)
     {
-        return new JsonObject((BasicBSONObject) JSON.parse(objectAsJson));
+        return new MongoJson((BasicBSONObject) JSON.parse(objectAsJson));
     }
-    public JsonObject(BasicBSONObject object)
+    public MongoJson(BasicBSONObject object)
     {
         this.object = object;
     }
@@ -20,7 +22,12 @@ public class JsonObject
      * Based on RFC-7396 + recursive algorithm for objects and arrays + array support (arrays' elements are merged one by one)
      * @see JsonMerge#merge(BasicBSONObject, BasicBSONObject)
      */
-    public JsonObject apply(JsonObject patch)
+    @Override
+    public MongoJson apply(Content patch)
+    {
+        return apply(convert(patch));
+    }
+    private MongoJson apply(MongoJson patch)
     {
         if(patch.object == null)
         {
@@ -31,14 +38,27 @@ public class JsonObject
             return this;
         }
         BasicBSONObject original = object == null ? new BasicBSONObject() : object;
-        return new JsonObject(JsonMerge.merge(original, patch.object));
+        return new MongoJson(JsonMerge.merge(original, patch.object));
     }
-    
+    private static MongoJson convert(Content patch)
+    {
+        if(patch == null || patch instanceof MongoJson)
+        {
+            return (MongoJson) patch;
+        }
+        return MongoJson.fromString(patch.toString());
+    }
     /**
      * Based on RFC-7396 + recursive algorithm for objects and arrays + array support (arrays' elements are merged one by one)
      * @see JsonDiff#diff(BasicBSONObject, BasicBSONObject)
      */
-    public JsonObject diff(JsonObject original)
+    @Override
+    public MongoJson diff(Content original)
+    {
+        return diff(convert(original));
+    }
+    
+    private MongoJson diff(MongoJson original)
     {
         if(object == null)
         {
@@ -49,7 +69,7 @@ public class JsonObject
             return this;
         }
         BasicBSONObject patch = JsonDiff.diff(object, original.object);
-        return new JsonObject(patch == null ? new BasicBSONObject() : patch);
+        return new MongoJson(patch == null ? new BasicBSONObject() : patch);
     }
     
     @Override
@@ -70,8 +90,8 @@ public class JsonObject
     {
         if(this == obj) { return true; }
         if(obj == null) { return false; }
-        if(!(obj instanceof JsonObject)) { return false; }
-        JsonObject other = (JsonObject) obj;
+        if(!(obj instanceof MongoJson)) { return false; }
+        MongoJson other = (MongoJson) obj;
         if(object == null)
         {
             if(other.object != null) { return false; }
@@ -79,7 +99,8 @@ public class JsonObject
         else if(!object.equals(other.object)) { return false; }
         return true;
     }
-    
-    
-
+    public BasicBSONObject getBSONObject()
+    {
+        return object;
+    }
 }

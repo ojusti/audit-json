@@ -9,55 +9,62 @@ import org.assertj.core.api.ObjectAssert;
 import org.assertj.core.internal.StandardComparisonStrategy;
 import org.assertj.core.util.Objects;
 
-import com.mongodb.util.JSON;
+import fr.infologic.vei.audit.api.AuditDriver.Content;
+import fr.infologic.vei.audit.api.AuditDriver.TrailObject;
+import fr.infologic.vei.audit.mongo.json.MongoJson;
 
-public class AuditJsonObjectAssert extends ObjectAssert<AuditJsonObject>
+public class AuditJsonObjectAssert extends ObjectAssert<TrailObject>
 {
-    public static AuditJsonObjectAssert assertThat(AuditJsonObject actual)
+    public static AuditJsonObjectAssert assertThat(TrailObject actual)
     {
         return new AuditJsonObjectAssert(actual);
     }
-    public static AuditJsonObjectListAssert assertThat(List<AuditJsonObject> actual)
+    public static AuditJsonObjectListAssert assertThat(List<? extends TrailObject> actual)
     {
-        return new AuditJsonObjectListAssert(actual);
+        return new AuditJsonObjectListAssert((List) actual);
     }
     
-    protected AuditJsonObjectAssert(AuditJsonObject actual)
+    protected AuditJsonObjectAssert(TrailObject actual)
     {
         super(actual);
     }
 
     public AuditJsonObjectAssert hasKey(String key)
     {
-        Assertions.assertThat(actual.key).isEqualTo(key);
+        Assertions.assertThat(actual.getKey()).isEqualTo(key);
         return this;
     }
 
     public AuditJsonObjectAssert hasType(String type)
     {
-        Assertions.assertThat(actual.type).isEqualTo(type);
+        Assertions.assertThat(actual.getType()).isEqualTo(type);
         return this;
     }
 
     public AuditJsonObjectAssert hasMetadata(Map<String, Object> metadata)
     {
-        Assertions.assertThat(actual.metadata.entrySet()).isEqualTo(metadata.entrySet());
+        Assertions.assertThat(actual.getMetadata().entrySet()).isEqualTo(metadata.entrySet());
         return this;
     }
     
     public AuditJsonObjectAssert hasContent(String content)
     {
-        Assertions.assertThat(JSON.parse(actual.objectAsJson)).isEqualTo(JSON.parse(content));
+        Assertions.assertThat(actual.getContent()).isEqualTo(MongoJson.fromString(content));
+        return this;
+    }
+    public AuditJsonObjectAssert hasContent(Content content)
+    {
+        Assertions.assertThat(actual.getContent()).isEqualTo(content);
         return this;
     }
     
-    public AuditJsonObjectAssert isEqualTo(AuditJsonObject expected)
+    public AuditJsonObjectAssert isEqualTo(TrailObject expected)
     {
-        return hasType(expected.type).hasKey(expected.key).hasMetadata(expected.metadata).hasContent(expected.objectAsJson);
+        return hasType(expected.getType()).hasKey(expected.getKey()).hasMetadata(expected.getMetadata()).hasContent(expected.getContent());
     }
-    public static class AuditJsonObjectListAssert extends ListAssert<AuditJsonObject>
+    public static class AuditJsonObjectListAssert extends ListAssert<TrailObject>
     {
-        protected AuditJsonObjectListAssert(List<AuditJsonObject> actual)
+        protected AuditJsonObjectListAssert(List<TrailObject> actual)
         {
             super(actual);
             usingComparisonStrategy(new StandardComparisonStrategy()
@@ -65,11 +72,11 @@ public class AuditJsonObjectAssert extends ObjectAssert<AuditJsonObject>
                 @Override
                 public boolean areEqual(Object actual, Object other)
                 {
-                    AuditJsonObject a = (AuditJsonObject) actual;
-                    AuditJsonObject o = (AuditJsonObject) other;
-                    return Objects.areEqual(a.key, o.key) && Objects.areEqual(a.type, o.type)
-                        && Objects.areEqual(a.metadata.keySet(), o.metadata.keySet()) 
-                        && Objects.areEqual(JSON.parse(a.objectAsJson), JSON.parse(o.objectAsJson));   
+                    TrailObject a = (TrailObject) actual;
+                    TrailObject o = (TrailObject) other;
+                    return Objects.areEqual(a.getKey(), o.getKey()) && Objects.areEqual(a.getType(), o.getType())
+                        && Objects.areEqual(a.getMetadata().keySet(), o.getMetadata().keySet()) 
+                        && Objects.areEqual(a.getContent(), o.getContent());   
                 }
             });
             
