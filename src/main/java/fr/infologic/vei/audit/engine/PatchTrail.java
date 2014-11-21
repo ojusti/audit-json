@@ -9,7 +9,7 @@ import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailTrace;
 import fr.infologic.vei.audit.engine.TrailEngine.Trail;
 import fr.infologic.vei.audit.engine.TrailEngine.TrailRecord;
 
-class DiffTrail implements Trail, TrailRecord, TrailTrace
+class PatchTrail implements Trail, TrailRecord, TrailTrace
 {
     private final TrailType type;
     private final String key;
@@ -18,7 +18,7 @@ class DiffTrail implements Trail, TrailRecord, TrailTrace
     private Map<String, Object> metadata;
     private int version;
 
-    DiffTrail(TrailType type, String key)
+    PatchTrail(TrailType type, String key)
     {
         this.type = type;
         this.key = key;

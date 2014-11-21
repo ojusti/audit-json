@@ -84,19 +84,19 @@ class MongoObject implements PatchableTrailTrace
         return object == null ? null : new MongoObject(type, object);
     }
 
-    static DBObject toDBObject(TrailTrace object)
+    static DBObject toDBObject(TrailTrace trace)
     {
-        if(object instanceof MongoObject)
+        if(trace instanceof MongoObject)
         {
-            return ((MongoObject) object).object;
+            return ((MongoObject) trace).object;
         }
-        return start(KEY, object.getKey())
-                .add(VERSION, object.getVersion())
-                .add(CONTENT, convert(object.getContent()))
-                .add(METADATA, start(object.getMetadata()).get())
+        return start(KEY, trace.getKey())
+                .add(VERSION, trace.getVersion())
+                .add(CONTENT, convert(trace.getContent()))
+                .add(METADATA, start(trace.getMetadata()).get())
                 .get();
     }
-
+    
     private static BSONObject convert(Content object)
     {
         if(object instanceof MongoJson)

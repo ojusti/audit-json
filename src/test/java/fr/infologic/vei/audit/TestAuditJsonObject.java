@@ -21,6 +21,10 @@ public class TestAuditJsonObject extends AuditTrace implements PatchableTrailTra
         withContent("{}");
         this.metadata = new HashMap<>();
     }
+    public static TestAuditJsonObject make()
+    {
+        return new TestAuditJsonObject("type", "key");
+    }
     public TestAuditJsonObject withContent(String content)
     {
         this.content = content;

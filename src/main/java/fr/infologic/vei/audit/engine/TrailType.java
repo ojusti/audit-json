@@ -18,7 +18,7 @@ public class TrailType
 
     public Trail trail(String key)
     {
-        return new DiffTrail(this, key);
+        return new PatchTrail(this, key);
     }
 
     PatchableTrailQuery query(String key)
@@ -26,9 +26,9 @@ public class TrailType
         return db.query(type, key);
     }
 
-    void save(TrailTrace object)
+    void save(TrailTrace trace)
     {
-        db.save(object);
+        db.save(trace);
     }
 
 }

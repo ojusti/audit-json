@@ -36,6 +36,6 @@ public interface TrailEngine
         PatchableTrailTrace applyTo(Content original);
     }
     PatchableTrailQuery query(String type, String key);
-    void save(TrailTrace object);
+    void save(TrailTrace trace);
     Content convertContent(String object);
 }

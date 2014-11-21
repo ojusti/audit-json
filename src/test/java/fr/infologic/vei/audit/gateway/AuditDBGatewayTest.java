@@ -1,5 +1,7 @@
 package fr.infologic.vei.audit.gateway;
 
+import static fr.infologic.vei.audit.TestAuditJsonObject.make;
+
 import java.util.List;
 
 import org.junit.After;
@@ -10,10 +12,8 @@ import org.junit.Test;
 
 import fr.infologic.vei.audit.AuditJsonObjectAssert;
 import fr.infologic.vei.audit.TestAuditJsonObject;
-import fr.infologic.vei.audit.api.TrailKey;
 import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
-import fr.infologic.vei.audit.gateway.AuditGateway;
-import fr.infologic.vei.audit.gateway.MongoAuditGatewayBuilder;
+import fr.infologic.vei.audit.api.TrailKey;
 
 
 public class AuditDBGatewayTest
@@ -29,7 +29,7 @@ public class AuditDBGatewayTest
     @Test
     public void traceAndRetrieveADocument()
     {
-        TestAuditJsonObject object = new TestAuditJsonObject("collection", "key").addMetadata("meta", "value");
+        TestAuditJsonObject object = make().addMetadata("meta", "value");
         gateway.trace(object);
 
         TrailKey key = object;
@@ -44,10 +44,10 @@ public class AuditDBGatewayTest
     @Test
     public void traceAPatchAndRetrieveAllVersions()
     {
-        TestAuditJsonObject v1 = new TestAuditJsonObject("collection", "key").withContent("{a:1}");
+        TestAuditJsonObject v1 = make().withContent("{a:1}");
         gateway.trace(v1);
         
-        TestAuditJsonObject v2 = new TestAuditJsonObject("collection", "key").withContent("{a:2,b:3}");
+        TestAuditJsonObject v2 = make().withContent("{a:2,b:3}");
         gateway.trace(v2);
 
         TrailKey key = v1;

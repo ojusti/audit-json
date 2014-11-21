@@ -90,9 +90,9 @@ public class MongoDB implements TrailEngine, AdminDB
     }
 
     @Override
-    public void save(TrailTrace object)
+    public void save(TrailTrace trace)
     {
-        db.getCollection(object.getType()).save(MongoObject.toDBObject(object));
+        db.getCollection(trace.getType()).save(MongoObject.toDBObject(trace));
     }
 
     @Override
