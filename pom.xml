@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.infologic.vei</groupId>
 	<artifactId>audit-json</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>Audit trail</name>
 	<description>Audit trail with Mongob and Json</description>
 	<properties>
@@ -40,6 +40,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -50,8 +51,8 @@
                 </executions>
             </plugin>
             <plugin>
-	           <groupId>org.apache.maven.plugins</groupId>
 	           <artifactId>maven-source-plugin</artifactId>
+	           <version>2.4</version>
 	           <executions>
 		          <execution>
 			         <id>attach-sources</id>
@@ -62,7 +63,6 @@
 	           </executions>
             </plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>2.9</version>
 				<executions>
