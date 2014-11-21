@@ -1,8 +1,9 @@
 package fr.infologic.vei.audit.mongo;
 
 import static com.mongodb.BasicDBObjectBuilder.start;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -65,18 +66,56 @@ class MongoObject implements PatchableTrailTrace
         return new MongoJson((BasicBSONObject) object.get(CONTENT));
     }
     
+    @Override
+    public MongoObject diff(Content original)
+    {
+        BasicDBObject diff = new BasicDBObject(object.toMap());
+        diff.put(CONTENT, getContent().diff(original).getBSONObject());
+        return new MongoObject(type, diff);
+    }
+
+    @Override
+    public MongoObject applyTo(Content original)
+    {
+        DBObject merge = new BasicDBObject(object.toMap());
+        merge.put(CONTENT, getContent().applyTo(original).getBSONObject());
+        return new MongoObject(type, merge);
+    }
+    
+    @Override
+    public boolean equals(Object other)
+    {
+        if(other == null)
+        {
+            return false;
+        }
+        if(!(other instanceof TrailTrace))
+        {
+            return false;
+        }
+        TrailTrace o = (TrailTrace) other;
+        return Objects.equals(getType(), o.getType())
+            && Objects.equals(getKey(), o.getKey()) 
+            && Objects.equals(getMetadata(), o.getMetadata()) 
+            && Objects.equals(getContent(), o.getContent());   
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(getType(), getKey(), getMetadata(), getContent());
+    }
+    
     static List<MongoObject> list(String type, DBCursor it)
     {
-        List<MongoObject> result = new ArrayList<>();
         try
         {
-            it.forEach(o -> result.add(new MongoObject(type, o)));
+            return stream(it.spliterator(), false).map(o -> new MongoObject(type, o)).collect(toList());
         }
         finally
         {
             it.close();
         }
-        return result;
     }
 
     static MongoObject object(String type, DBObject object)
@@ -105,45 +144,5 @@ class MongoObject implements PatchableTrailTrace
         }
         return (BSONObject) JSON.parse(object.toString());
     }
-    
-    @Override
-    public boolean equals(Object other)
-    {
-        if(other == null)
-        {
-            return false;
-        }
-        if(!(other instanceof TrailTrace))
-        {
-            return false;
-        }
-        TrailTrace o = (TrailTrace) other;
-        return Objects.equals(getType(), o.getType())
-            && Objects.equals(getKey(), o.getKey()) 
-            && Objects.equals(getMetadata(), o.getMetadata()) 
-            && Objects.equals(getContent(), o.getContent());   
-    }
-    
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(getType(), getKey(), getMetadata(), getContent());
-    }
 
-    @Override
-    public MongoObject diff(Content original)
-    {
-        BasicDBObject diff = new BasicDBObject(object.toMap());
-        diff.put(CONTENT, getContent().diff(original).getBSONObject());
-        return new MongoObject(type, diff);
-    }
-
-
-    @Override
-    public MongoObject applyTo(Content original)
-    {
-        DBObject merge = new BasicDBObject(object.toMap());
-        merge.put(CONTENT, getContent().applyTo(original).getBSONObject());
-        return new MongoObject(type, merge);
-    }
 }
