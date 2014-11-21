@@ -10,10 +10,10 @@ public interface AuditDriver
     
     public interface TrailQuery
     {
-        TrailObject last();
-        List<? extends TrailObject> all();
+        TrailTrace last();
+        List<? extends TrailTrace> all();
     }
-    public interface TrailObject extends TrailKey
+    public interface TrailTrace extends TrailKey
     {
         int getVersion();
         Map<String, Object> getMetadata();
@@ -21,7 +21,7 @@ public interface AuditDriver
     }
     public interface Content
     {
-        Content apply(Content patch);
+        Content applyTo(Content original);
         Content diff(Content original);
     }
 }

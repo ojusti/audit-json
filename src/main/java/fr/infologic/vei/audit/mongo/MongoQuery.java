@@ -10,9 +10,9 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-import fr.infologic.vei.audit.api.AuditDriver.TrailQuery;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailQuery;
 
-class MongoQuery implements TrailQuery
+class MongoQuery implements PatchableTrailQuery
 {
     private final DBCollection collection;
     private final String key;

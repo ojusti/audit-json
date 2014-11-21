@@ -8,7 +8,7 @@ import com.mongodb.MongoException;
 import com.mongodb.ServerAddress;
 
 import fr.infologic.vei.audit.api.AdminDB;
-import fr.infologic.vei.audit.api.AuditDriver.TrailObject;
+import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
 import fr.infologic.vei.audit.engine.TrailEngine;
 import fr.infologic.vei.audit.engine.TrailType;
 import fr.infologic.vei.audit.mongo.json.MongoJson;
@@ -90,9 +90,9 @@ public class MongoDB implements TrailEngine, AdminDB
     }
 
     @Override
-    public void save(TrailObject object)
+    public void save(TrailTrace object)
     {
-        db.getCollection(object.getType()).insert(MongoObject.convert(object));
+        db.getCollection(object.getType()).save(MongoObject.toDBObject(object));
     }
 
     @Override

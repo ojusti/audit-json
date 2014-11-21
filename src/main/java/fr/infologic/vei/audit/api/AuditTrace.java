@@ -11,13 +11,6 @@ public class AuditTrace implements TrailKey
     public Map<String, Object> metadata = Collections.emptyMap();
     
     @Override
-    public String toString()
-    {
-        return String.format("AuditObject [type=%s, key=%s, metadata=%s, content=%s]",
-                             type, key, metadata, content);
-    }
-
-    @Override
     public String getType()
     {
         return type;
@@ -27,5 +20,12 @@ public class AuditTrace implements TrailKey
     public String getKey()
     {
         return key;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return String.format("AuditObject [type=%s, key=%s, metadata=%s, content=%s]",
+                             type, key, metadata, content);
     }
 }

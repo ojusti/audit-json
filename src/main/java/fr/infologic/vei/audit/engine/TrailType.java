@@ -1,7 +1,7 @@
 package fr.infologic.vei.audit.engine;
 
-import fr.infologic.vei.audit.api.AuditDriver.TrailObject;
-import fr.infologic.vei.audit.api.AuditDriver.TrailQuery;
+import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailQuery;
 import fr.infologic.vei.audit.engine.TrailEngine.Trail;
 
 
@@ -21,12 +21,12 @@ public class TrailType
         return new DiffTrail(this, key);
     }
 
-    TrailQuery query(String key)
+    PatchableTrailQuery query(String key)
     {
         return db.query(type, key);
     }
 
-    void insert(TrailObject object)
+    void save(TrailTrace object)
     {
         db.save(object);
     }

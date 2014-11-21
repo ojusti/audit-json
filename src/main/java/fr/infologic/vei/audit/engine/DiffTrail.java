@@ -3,18 +3,20 @@ package fr.infologic.vei.audit.engine;
 import java.util.Map;
 
 import fr.infologic.vei.audit.api.AuditDriver.Content;
-import fr.infologic.vei.audit.api.AuditDriver.TrailObject;
-import fr.infologic.vei.audit.api.AuditDriver.TrailQuery;
+import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailQuery;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailTrace;
 import fr.infologic.vei.audit.engine.TrailEngine.Trail;
 import fr.infologic.vei.audit.engine.TrailEngine.TrailRecord;
 
-class DiffTrail implements Trail, TrailRecord, TrailObject
+class DiffTrail implements Trail, TrailRecord, TrailTrace
 {
     private final TrailType type;
     private final String key;
-    private TrailQuery query;
+    private PatchableTrailQuery query;
     private Content content;
     private Map<String, Object> metadata;
+    private int version;
 
     DiffTrail(TrailType type, String key)
     {
@@ -39,16 +41,21 @@ class DiffTrail implements Trail, TrailRecord, TrailObject
     @Override
     public void save()
     {
-        type.insert(this);
+        PatchableTrailTrace lastTrace = query().last();
+        if(lastTrace == null)
+        {
+            this.version = 1;
+        }
+        else
+        {
+            this.version = lastTrace.getVersion() + 1;
+            type.save(lastTrace.diff(getContent()));
+        }
+        type.save(this);
     }
 
-    int incVersion(TrailObject last)
-    {
-        return last == null ? 0 : last.getVersion() + 1;
-    }
-    
     @Override
-    public TrailQuery query()
+    public PatchableTrailQuery query()
     {
         if(query == null)
         {
@@ -72,7 +79,7 @@ class DiffTrail implements Trail, TrailRecord, TrailObject
     @Override
     public int getVersion()
     {
-        return incVersion(query().last());
+        return version;
     }
 
     @Override

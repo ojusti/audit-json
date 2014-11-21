@@ -7,17 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 import fr.infologic.vei.audit.api.AuditDriver.Content;
-import fr.infologic.vei.audit.api.AuditDriver.TrailObject;
+import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailTrace;
 import fr.infologic.vei.audit.mongo.json.MongoJson;
 
-class MongoObject implements TrailObject
+class MongoObject implements PatchableTrailTrace
 {
     static final String VERSION = "version";
     static final String KEY = "key";
@@ -81,7 +84,7 @@ class MongoObject implements TrailObject
         return object == null ? null : new MongoObject(type, object);
     }
 
-    public static DBObject convert(TrailObject object)
+    static DBObject toDBObject(TrailTrace object)
     {
         if(object instanceof MongoObject)
         {
@@ -94,13 +97,13 @@ class MongoObject implements TrailObject
                 .get();
     }
 
-    private static BasicBSONObject convert(Content object)
+    private static BSONObject convert(Content object)
     {
         if(object instanceof MongoJson)
         {
             return ((MongoJson) object).getBSONObject();
         }
-        return (BasicBSONObject) JSON.parse(object.toString());
+        return (BSONObject) JSON.parse(object.toString());
     }
     
     @Override
@@ -110,11 +113,11 @@ class MongoObject implements TrailObject
         {
             return false;
         }
-        if(!(other instanceof TrailObject))
+        if(!(other instanceof TrailTrace))
         {
             return false;
         }
-        TrailObject o = (TrailObject) other;
+        TrailTrace o = (TrailTrace) other;
         return Objects.equals(getType(), o.getType())
             && Objects.equals(getKey(), o.getKey()) 
             && Objects.equals(getMetadata(), o.getMetadata()) 
@@ -125,5 +128,22 @@ class MongoObject implements TrailObject
     public int hashCode()
     {
         return Objects.hash(getType(), getKey(), getMetadata(), getContent());
+    }
+
+    @Override
+    public MongoObject diff(Content original)
+    {
+        BasicDBObject diff = new BasicDBObject(object.toMap());
+        diff.put(CONTENT, getContent().diff(original).getBSONObject());
+        return new MongoObject(type, diff);
+    }
+
+
+    @Override
+    public MongoObject applyTo(Content original)
+    {
+        DBObject merge = new BasicDBObject(object.toMap());
+        merge.put(CONTENT, getContent().applyTo(original).getBSONObject());
+        return new MongoObject(type, merge);
     }
 }

@@ -3,6 +3,7 @@ package fr.infologic.vei.audit.gateway;
 import fr.infologic.vei.audit.api.AdminDB;
 import fr.infologic.vei.audit.api.AuditTrace;
 import fr.infologic.vei.audit.api.TrailKey;
+import fr.infologic.vei.audit.engine.PatchedTrailQuery;
 import fr.infologic.vei.audit.engine.TrailEngine;
 import fr.infologic.vei.audit.engine.TrailEngine.Trail;
 
@@ -34,7 +35,7 @@ class AuditDBGateway implements AuditGateway
     @Override
     public TrailQuery find(TrailKey key)
     {
-        return trailFor(key).query();
+        return new PatchedTrailQuery(trailFor(key).query());
     }
 
     @Override

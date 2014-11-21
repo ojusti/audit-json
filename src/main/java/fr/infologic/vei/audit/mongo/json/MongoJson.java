@@ -23,22 +23,22 @@ public class MongoJson implements Content
      * @see JsonMerge#merge(BasicBSONObject, BasicBSONObject)
      */
     @Override
-    public MongoJson apply(Content patch)
+    public MongoJson applyTo(Content original)
     {
-        return apply(convert(patch));
+        return applyTo(convert(original));
     }
-    private MongoJson apply(MongoJson patch)
+    private MongoJson applyTo(MongoJson original)
     {
-        if(patch.object == null)
-        {
-            return patch;
-        }
-        if(patch.object.isEmpty())
+        if(object == null)
         {
             return this;
         }
-        BasicBSONObject original = object == null ? new BasicBSONObject() : object;
-        return new MongoJson(JsonMerge.merge(original, patch.object));
+        if(object.isEmpty())
+        {
+            return original;
+        }
+        BasicBSONObject originalContent = original.object == null ? new BasicBSONObject() : original.object;
+        return new MongoJson(JsonMerge.merge(originalContent, object));
     }
     private static MongoJson convert(Content patch)
     {

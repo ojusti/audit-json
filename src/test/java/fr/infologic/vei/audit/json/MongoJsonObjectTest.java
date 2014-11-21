@@ -62,6 +62,6 @@ public class MongoJsonObjectTest
     @Test
     public void testMergePatch()
     {
-        Assertions.assertThat(original.apply(patch)).describedAs("%s + %s = %s", original, patch, result).isEqualTo(result);
+        Assertions.assertThat(patch.applyTo(original)).describedAs("%s + %s = %s", original, patch, result).isEqualTo(result);
     }
 }

@@ -11,12 +11,12 @@ import org.junit.Test;
 import fr.infologic.vei.audit.AuditJsonObjectAssert;
 import fr.infologic.vei.audit.TestAuditJsonObject;
 import fr.infologic.vei.audit.api.TrailKey;
-import fr.infologic.vei.audit.api.AuditDriver.TrailObject;
+import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
 import fr.infologic.vei.audit.gateway.AuditGateway;
 import fr.infologic.vei.audit.gateway.MongoAuditGatewayBuilder;
 
 
-public class DBAuditJsonGatewayTest
+public class AuditDBGatewayTest
 {
     private AuditGateway gateway;
     
@@ -33,7 +33,7 @@ public class DBAuditJsonGatewayTest
         gateway.trace(object);
 
         TrailKey key = object;
-        TrailObject persisted = gateway.find(key).last();
+        TrailTrace persisted = gateway.find(key).last();
         AuditJsonObjectAssert.assertThat(persisted).hasKey(object.key)
                                                    .hasType(object.type)
                                                    .hasMetadata(object.metadata)
@@ -44,14 +44,14 @@ public class DBAuditJsonGatewayTest
     @Test
     public void traceAPatchAndRetrieveAllVersions()
     {
-        TestAuditJsonObject v1 = new TestAuditJsonObject("collection", "key").withContent("{a : \"b\"}");
+        TestAuditJsonObject v1 = new TestAuditJsonObject("collection", "key").withContent("{a:1}");
         gateway.trace(v1);
         
-        TestAuditJsonObject v2 = new TestAuditJsonObject("collection", "key").withContent("{a : \"c\", b : \"d\"}");
+        TestAuditJsonObject v2 = new TestAuditJsonObject("collection", "key").withContent("{a:2,b:3}");
         gateway.trace(v2);
 
         TrailKey key = v1;
-        List<? extends TrailObject> persisted = gateway.find(key).all();
+        List<? extends TrailTrace> persisted = gateway.find(key).all();
         AuditJsonObjectAssert.assertThat(persisted).containsExactly(v1, v2);
     }
     
@@ -68,6 +68,6 @@ public class DBAuditJsonGatewayTest
     }
     private static AuditGateway gateway()
     {
-        return MongoAuditGatewayBuilder.db(DBAuditJsonGatewayTest.class.getSimpleName()).build();
+        return MongoAuditGatewayBuilder.db(AuditDBGatewayTest.class.getSimpleName()).build();
     }
 }

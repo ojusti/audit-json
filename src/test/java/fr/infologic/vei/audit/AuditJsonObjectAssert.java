@@ -10,21 +10,21 @@ import org.assertj.core.internal.StandardComparisonStrategy;
 import org.assertj.core.util.Objects;
 
 import fr.infologic.vei.audit.api.AuditDriver.Content;
-import fr.infologic.vei.audit.api.AuditDriver.TrailObject;
+import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
 import fr.infologic.vei.audit.mongo.json.MongoJson;
 
-public class AuditJsonObjectAssert extends ObjectAssert<TrailObject>
+public class AuditJsonObjectAssert extends ObjectAssert<TrailTrace>
 {
-    public static AuditJsonObjectAssert assertThat(TrailObject actual)
+    public static AuditJsonObjectAssert assertThat(TrailTrace actual)
     {
         return new AuditJsonObjectAssert(actual);
     }
-    public static AuditJsonObjectListAssert assertThat(List<? extends TrailObject> actual)
+    public static AuditJsonObjectListAssert assertThat(List<? extends TrailTrace> actual)
     {
         return new AuditJsonObjectListAssert((List) actual);
     }
     
-    protected AuditJsonObjectAssert(TrailObject actual)
+    protected AuditJsonObjectAssert(TrailTrace actual)
     {
         super(actual);
     }
@@ -58,13 +58,13 @@ public class AuditJsonObjectAssert extends ObjectAssert<TrailObject>
         return this;
     }
     
-    public AuditJsonObjectAssert isEqualTo(TrailObject expected)
+    public AuditJsonObjectAssert isEqualTo(TrailTrace expected)
     {
         return hasType(expected.getType()).hasKey(expected.getKey()).hasMetadata(expected.getMetadata()).hasContent(expected.getContent());
     }
-    public static class AuditJsonObjectListAssert extends ListAssert<TrailObject>
+    public static class AuditJsonObjectListAssert extends ListAssert<TrailTrace>
     {
-        protected AuditJsonObjectListAssert(List<TrailObject> actual)
+        protected AuditJsonObjectListAssert(List<TrailTrace> actual)
         {
             super(actual);
             usingComparisonStrategy(new StandardComparisonStrategy()
@@ -72,8 +72,8 @@ public class AuditJsonObjectAssert extends ObjectAssert<TrailObject>
                 @Override
                 public boolean areEqual(Object actual, Object other)
                 {
-                    TrailObject a = (TrailObject) actual;
-                    TrailObject o = (TrailObject) other;
+                    TrailTrace a = (TrailTrace) actual;
+                    TrailTrace o = (TrailTrace) other;
                     return Objects.areEqual(a.getKey(), o.getKey()) && Objects.areEqual(a.getType(), o.getType())
                         && Objects.areEqual(a.getMetadata().keySet(), o.getMetadata().keySet()) 
                         && Objects.areEqual(a.getContent(), o.getContent());   
