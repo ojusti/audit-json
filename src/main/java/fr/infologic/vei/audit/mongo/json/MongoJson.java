@@ -1,5 +1,7 @@
 package fr.infologic.vei.audit.mongo.json;
 
+import static fr.infologic.vei.audit.mongo.json.JsonMerge.merge;
+
 import org.bson.BasicBSONObject;
 
 import com.mongodb.util.JSON;
@@ -38,15 +40,15 @@ public class MongoJson implements Content
             return original;
         }
         BasicBSONObject originalContent = original.object == null ? new BasicBSONObject() : original.object;
-        return new MongoJson(JsonMerge.merge(originalContent, object));
+        return new MongoJson(merge(originalContent, object));
     }
-    private static MongoJson convert(Content patch)
+    private static MongoJson convert(Content content)
     {
-        if(patch == null || patch instanceof MongoJson)
+        if(content == null || content instanceof MongoJson)
         {
-            return (MongoJson) patch;
+            return (MongoJson) content;
         }
-        return MongoJson.fromString(patch.toString());
+        return MongoJson.fromString(content.toString());
     }
     /**
      * Based on RFC-7396 + recursive algorithm for objects and arrays + array support (arrays' elements are merged one by one)
