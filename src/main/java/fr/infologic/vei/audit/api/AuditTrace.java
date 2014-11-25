@@ -25,7 +25,7 @@ public class AuditTrace implements TrailKey
     @Override
     public String toString()
     {
-        return String.format("AuditObject [type=%s, key=%s, metadata=%s, content=%s]",
+        return String.format("AuditTrace [type=%s, key=%s, metadata=%s, content=%s]",
                              type, key, metadata, content);
     }
 }
