@@ -39,15 +39,14 @@ class AuditDBGateway implements AuditGateway
     }
 
     @Override
-    public AuditTraceCollection search(AuditTraceQuery query)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
     public AdminDB db()
     {
         return db;
+    }
+
+    @Override
+    public TraceQueryBuilder makeQuery()
+    {
+        return engine.makeQuery();
     }
 }

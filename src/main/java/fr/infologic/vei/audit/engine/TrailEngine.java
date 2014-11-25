@@ -6,6 +6,7 @@ import java.util.Map;
 import fr.infologic.vei.audit.api.AuditDriver.Content;
 import fr.infologic.vei.audit.api.AuditDriver.TrailQuery;
 import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
+import fr.infologic.vei.audit.api.QueryDriver.TraceQueryBuilder;
 
 public interface TrailEngine
 {
@@ -38,4 +39,5 @@ public interface TrailEngine
     PatchableTrailQuery query(String type, String key);
     void save(TrailTrace trace);
     Content convertContent(String object);
+    TraceQueryBuilder makeQuery();
 }

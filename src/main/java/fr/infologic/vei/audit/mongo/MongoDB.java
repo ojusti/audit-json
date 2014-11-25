@@ -9,6 +9,7 @@ import com.mongodb.ServerAddress;
 
 import fr.infologic.vei.audit.api.AdminDB;
 import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
+import fr.infologic.vei.audit.api.QueryDriver.TraceQueryBuilder;
 import fr.infologic.vei.audit.engine.TrailEngine;
 import fr.infologic.vei.audit.engine.TrailType;
 import fr.infologic.vei.audit.mongo.json.MongoJson;
@@ -100,43 +101,11 @@ public class MongoDB implements TrailEngine, AdminDB
     {
         return MongoJson.fromString(object);
     }
-    
-//    private void addJson(String collection, String... json)
-//    {
-//        List<DBObject> objects = new ArrayList<>(json.length);
-//        for(String content : json)
-//        {
-//            objects.add((DBObject) JSON.parse(content));
-//        }
-//        collection.insert(objects);
-//    }
-//    
-//    private void addJson(String... json)
-//    {
-//        List<DBObject> objects = new ArrayList<>(json.length);
-//        for(String content : json)
-//        {
-//            objects.add((DBObject) JSON.parse(content));
-//        }
-//        collection.insert(objects);
-//    }
-//    
-//    public List valuesOf(String field)
-//    {
-//        return collection.distinct(nested(field));
-//    }
-//
-//    public int count(String field, String value)
-//    {
-//        return (int) collection.count(new BasicDBObjectBuilder().add(nested(field), value).get());
-//    }
-//    public int count()
-//    {
-//        return (int) collection.count();
-//    }
-//
-//    private static String nested(String field)
-//    {
-//        return "object." + field;
-//    }
+
+    @Override
+    public TraceQueryBuilder makeQuery()
+    {
+        return new MongoGlobalQuery(db);
+    }
+   
 }

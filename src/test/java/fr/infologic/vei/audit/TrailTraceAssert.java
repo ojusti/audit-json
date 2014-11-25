@@ -13,52 +13,52 @@ import fr.infologic.vei.audit.api.AuditDriver.Content;
 import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
 import fr.infologic.vei.audit.mongo.json.MongoJson;
 
-public class AuditJsonObjectAssert extends ObjectAssert<TrailTrace>
+public class TrailTraceAssert extends ObjectAssert<TrailTrace>
 {
-    public static AuditJsonObjectAssert assertThat(TrailTrace actual)
+    public static TrailTraceAssert assertThat(TrailTrace actual)
     {
-        return new AuditJsonObjectAssert(actual);
+        return new TrailTraceAssert(actual);
     }
     public static AuditJsonObjectListAssert assertThat(List<? extends TrailTrace> actual)
     {
         return new AuditJsonObjectListAssert((List) actual);
     }
     
-    protected AuditJsonObjectAssert(TrailTrace actual)
+    protected TrailTraceAssert(TrailTrace actual)
     {
         super(actual);
     }
 
-    public AuditJsonObjectAssert hasKey(String key)
+    public TrailTraceAssert hasKey(String key)
     {
         Assertions.assertThat(actual.getKey()).isEqualTo(key);
         return this;
     }
 
-    public AuditJsonObjectAssert hasType(String type)
+    public TrailTraceAssert hasType(String type)
     {
         Assertions.assertThat(actual.getType()).isEqualTo(type);
         return this;
     }
 
-    public AuditJsonObjectAssert hasMetadata(Map<String, Object> metadata)
+    public TrailTraceAssert hasMetadata(Map<String, Object> metadata)
     {
         Assertions.assertThat(actual.getMetadata().entrySet()).isEqualTo(metadata.entrySet());
         return this;
     }
     
-    public AuditJsonObjectAssert hasContent(String content)
+    public TrailTraceAssert hasContent(String content)
     {
         Assertions.assertThat(actual.getContent()).isEqualTo(MongoJson.fromString(content));
         return this;
     }
-    public AuditJsonObjectAssert hasContent(Content content)
+    public TrailTraceAssert hasContent(Content content)
     {
         Assertions.assertThat(actual.getContent()).isEqualTo(content);
         return this;
     }
     
-    public AuditJsonObjectAssert isEqualTo(TrailTrace expected)
+    public TrailTraceAssert isEqualTo(TrailTrace expected)
     {
         return hasType(expected.getType()).hasKey(expected.getKey()).hasMetadata(expected.getMetadata()).hasContent(expected.getContent());
     }

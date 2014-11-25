@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.infologic.vei.audit.AuditJsonObjectAssert;
 import fr.infologic.vei.audit.TestAuditJsonObject;
+import fr.infologic.vei.audit.TrailTraceAssert;
 import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
 import fr.infologic.vei.audit.api.TrailKey;
 
@@ -29,12 +29,12 @@ public class AuditDBGatewayTest
     @Test
     public void traceAndRetrieveADocument()
     {
-        TestAuditJsonObject object = make().addMetadata("meta", "value");
+        TestAuditJsonObject object = make().addMetadata("key", "value");
         gateway.trace(object);
 
         TrailKey key = object;
         TrailTrace persisted = gateway.find(key).last();
-        AuditJsonObjectAssert.assertThat(persisted).hasKey(object.key)
+        TrailTraceAssert.assertThat(persisted).hasKey(object.key)
                                                    .hasType(object.type)
                                                    .hasMetadata(object.metadata)
                                                    .hasContent(object.content)
@@ -52,7 +52,19 @@ public class AuditDBGatewayTest
 
         TrailKey key = v1;
         List<? extends TrailTrace> persisted = gateway.find(key).all();
-        AuditJsonObjectAssert.assertThat(persisted).containsExactly(v1, v2);
+        TrailTraceAssert.assertThat(persisted).containsExactly(v1, v2);
+    }
+    
+    @Test
+    public void traceAndSearchForADocument()
+    {
+        gateway.trace(make().addMetadata("key1", "value1").addMetadata("key2", "0value"));
+        
+        TestAuditJsonObject object = make().addMetadata("key1", "value1").addMetadata("key2", "value2");
+        gateway.trace(object);
+        
+        List<TrailTrace> result = gateway.makeQuery().metadata().fieldEqualsTo("key1", "value1").fieldGreaterThan("key2", "value").build().search();
+        TrailTraceAssert.assertThat(result).containsExactly(object);
     }
     
     @After
