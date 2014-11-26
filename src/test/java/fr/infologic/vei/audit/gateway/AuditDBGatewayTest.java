@@ -60,8 +60,10 @@ public class AuditDBGatewayTest
     {
         gateway.trace(make().addMetadata("key1", "value1").addMetadata("key2", "0value"));
         
-        TestAuditJsonObject object = make().addMetadata("key1", "value1").addMetadata("key2", "value2");
+        TestAuditJsonObject object = make().addMetadata("key1", "value1").addMetadata("key2", "value2").withContent("{a:3}");
         gateway.trace(object);
+        
+        object.withContent(null);
         
         List<TrailTrace> result = gateway.makeQuery().metadata().fieldEqualsTo("key1", "value1").fieldGreaterThan("key2", "value").build().search();
         TrailTraceAssert.assertThat(result).containsExactly(object);

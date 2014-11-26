@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -111,7 +112,6 @@ class MongoGlobalQuery implements TraceQueryBuilder, TraceQuery
 
     private List<MongoObject> search(DBCollection collection)
     {
-        System.out.println(query.get());
-        return list(collection.getName(), collection.find(query.get()));
+        return list(collection.getName(), collection.find(query.get(), new BasicDBObject(MongoObject.CONTENT, 0)));
     }
 }
