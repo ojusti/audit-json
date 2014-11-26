@@ -9,8 +9,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import fr.infologic.vei.audit.mongo.json.MongoJson;
-
 @RunWith(Parameterized.class)
 public class MongoJsonTest
 {
