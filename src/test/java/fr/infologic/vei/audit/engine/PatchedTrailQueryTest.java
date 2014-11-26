@@ -45,7 +45,7 @@ public class PatchedTrailQueryTest
     public void setUpOriginalContent()
     {
         patchTrail = mock(PatchableTrailQuery.class);
-        when(patchTrail.all()).thenReturn(trailOf(patches));
+        when(patchTrail.allFromVersion(1)).thenReturn(trailOf(patches));
     }
     private List trailOf(String[] content)
     {

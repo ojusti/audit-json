@@ -27,7 +27,13 @@ public class PatchedTrailQuery implements TrailQuery
     @Override
     public List<? extends TrailTrace> all()
     {
-        List<? extends PatchableTrailTrace> content = query.all();
+        return allFromVersion(1);
+    }
+    
+    @Override
+    public List<? extends TrailTrace> allFromVersion(int minVersion)
+    {
+        List<? extends PatchableTrailTrace> content = query.allFromVersion(minVersion);
         if(containsPatches(content))
         {
             return patch(content);
@@ -58,4 +64,5 @@ public class PatchedTrailQuery implements TrailQuery
     {
         return content.get(content.size() - 1).getContent();
     }
+
 }

@@ -34,26 +34,32 @@ class MongoQuery implements PatchableTrailQuery
     {
         return MongoObject.list(collection.getName(), trace().sort(asc(VERSION)));
     }
+    
+    @Override
+    public List<MongoObject> allFromVersion(int minVersion)
+    {
+        return MongoObject.list(collection.getName(), trace().skip(minVersion - 1).sort(asc(VERSION)));
+    }
 
-    DBObject _last()
+    private DBObject _last()
     {
         return trace().sort(desc(VERSION)).one();
     }
 
-    DBCursor trace()
+    private DBCursor trace()
     {
         return collection.find(eq(KEY, key));
     }
 
-    static DBObject desc(String key)
+    private static DBObject desc(String key)
     {
         return eq(key, -1);
     } 
-    static DBObject asc(String key)
+    private static DBObject asc(String key)
     {
         return eq(key, 1);
     } 
-    static DBObject eq(String key, Object value)
+    private static DBObject eq(String key, Object value)
     {
         return new BasicDBObject(key, value);
     }

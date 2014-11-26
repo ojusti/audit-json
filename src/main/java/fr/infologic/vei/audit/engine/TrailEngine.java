@@ -28,6 +28,8 @@ public interface TrailEngine
         PatchableTrailTrace last();
         @Override
         List<? extends PatchableTrailTrace> all();
+        @Override
+        List<? extends PatchableTrailTrace> allFromVersion(int minVersion);
     }
     public interface PatchableTrailTrace extends TrailTrace, Content
     {

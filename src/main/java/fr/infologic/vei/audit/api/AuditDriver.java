@@ -11,11 +11,12 @@ public interface AuditDriver
     public interface TrailQuery
     {
         TrailTrace last();
+        /** shortcut from allFromVersion(1) */
         List<? extends TrailTrace> all();
+        List<? extends TrailTrace> allFromVersion(int minVersion);
     }
-    public interface TrailTrace extends TrailKey
+    public interface TrailTrace extends TrailTraceKey
     {
-        int getVersion();
         Map<String, Object> getMetadata();
         Content getContent();
     }

@@ -9,7 +9,7 @@ import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailTrace;
 import fr.infologic.vei.audit.engine.TrailEngine.Trail;
 import fr.infologic.vei.audit.engine.TrailEngine.TrailRecord;
 
-class PatchTrail implements Trail, TrailRecord, TrailTrace
+class PatchTrail implements Trail, TrailTrace, TrailRecord
 {
     private final TrailType type;
     private final String key;
