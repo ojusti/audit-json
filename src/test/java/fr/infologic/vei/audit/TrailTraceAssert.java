@@ -19,9 +19,9 @@ public class TrailTraceAssert extends ObjectAssert<TrailTrace>
     {
         return new TrailTraceAssert(actual);
     }
-    public static AuditJsonObjectListAssert assertThat(List<? extends TrailTrace> actual)
+    public static TrailTraceListAssert assertThat(List<? extends TrailTrace> actual)
     {
-        return new AuditJsonObjectListAssert((List) actual);
+        return new TrailTraceListAssert((List) actual);
     }
     
     protected TrailTraceAssert(TrailTrace actual)
@@ -62,9 +62,9 @@ public class TrailTraceAssert extends ObjectAssert<TrailTrace>
     {
         return hasType(expected.getType()).hasKey(expected.getKey()).hasMetadata(expected.getMetadata()).hasContent(expected.getContent());
     }
-    public static class AuditJsonObjectListAssert extends ListAssert<TrailTrace>
+    public static class TrailTraceListAssert extends ListAssert<TrailTrace>
     {
-        protected AuditJsonObjectListAssert(List<TrailTrace> actual)
+        protected TrailTraceListAssert(List<TrailTrace> actual)
         {
             super(actual);
             usingComparisonStrategy(new StandardComparisonStrategy()
@@ -75,7 +75,7 @@ public class TrailTraceAssert extends ObjectAssert<TrailTrace>
                     TrailTrace a = (TrailTrace) actual;
                     TrailTrace o = (TrailTrace) other;
                     return Objects.areEqual(a.getKey(), o.getKey()) && Objects.areEqual(a.getType(), o.getType())
-                        && Objects.areEqual(a.getMetadata().keySet(), o.getMetadata().keySet()) 
+                        && Objects.areEqual(a.getMetadata().entrySet(), o.getMetadata().entrySet()) 
                         && Objects.areEqual(a.getContent(), o.getContent());   
                 }
             });
