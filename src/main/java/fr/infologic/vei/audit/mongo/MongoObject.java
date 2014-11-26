@@ -29,13 +29,13 @@ class MongoObject implements PatchableTrailTrace
     static final String METADATA = "metadata";
     private final String type;
     private final DBObject object;
-    
+
     private MongoObject(String type, DBObject object)
     {
         this.type = type;
         this.object = object;
     }
-    
+
     @Override
     public String getType()
     {
@@ -47,25 +47,25 @@ class MongoObject implements PatchableTrailTrace
     {
         return (String) object.get(KEY);
     }
-    
+
     @Override
     public Map<String, Object> getMetadata()
     {
         return (Map<String, Object>) object.get(METADATA);
     }
-    
+
     @Override
     public int getVersion()
     {
         return (int) object.get(VERSION);
     }
-    
+
     @Override
     public MongoJson getContent()
     {
         return new MongoJson((BasicBSONObject) object.get(CONTENT));
     }
-    
+
     @Override
     public MongoObject diff(Content original)
     {
@@ -81,7 +81,7 @@ class MongoObject implements PatchableTrailTrace
         merge.put(CONTENT, getContent().applyTo(original).getBSONObject());
         return new MongoObject(type, merge);
     }
-    
+
     @Override
     public boolean equals(Object other)
     {
@@ -95,17 +95,23 @@ class MongoObject implements PatchableTrailTrace
         }
         TrailTrace o = (TrailTrace) other;
         return Objects.equals(getType(), o.getType())
-            && Objects.equals(getKey(), o.getKey()) 
-            && Objects.equals(getMetadata(), o.getMetadata()) 
-            && Objects.equals(getContent(), o.getContent());   
+            && Objects.equals(getKey(), o.getKey())
+            && Objects.equals(getMetadata(), o.getMetadata())
+            && Objects.equals(getContent(), o.getContent());
     }
-    
+
     @Override
     public int hashCode()
     {
         return Objects.hash(getType(), getKey(), getMetadata(), getContent());
     }
-    
+
+    @Override
+    public String toString()
+    {
+        return String.format("MongoObject [type=%s, object=%s]", type, object);
+    }
+
     static List<MongoObject> list(String type, DBCursor it)
     {
         try
@@ -135,7 +141,7 @@ class MongoObject implements PatchableTrailTrace
                 .add(METADATA, start(trace.getMetadata()).get())
                 .get();
     }
-    
+
     private static BSONObject convert(Content object)
     {
         if(object instanceof MongoJson)
