@@ -35,33 +35,38 @@
 			<artifactId>mongo-java-driver</artifactId>
 			<version>2.12.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.cedarsoftware</groupId>
+			<artifactId>json-io</artifactId>
+			<version>2.7.3</version>
+		</dependency>
 	</dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-	           <artifactId>maven-source-plugin</artifactId>
-	           <version>2.4</version>
-	           <executions>
-		          <execution>
-			         <id>attach-sources</id>
-			         <goals>
-				        <goal>jar</goal>
-			         </goals>
-		          </execution>
-	           </executions>
-            </plugin>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>2.9</version>
@@ -82,17 +87,15 @@
 									<outputDirectory>${project.build.directory}/../../../dev/head/libraries</outputDirectory>
 								</artifactItem>
 								<artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>${project.artifactId}</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>${project.packaging}</type>
-                                    <classifier>sources</classifier>
-                                    <outputDirectory>${project.build.directory}/../../../dev/head/libraries-src/src</outputDirectory>
-                                </artifactItem>
-								<!-- <artifactItem>
-				                  <groupId>org.mongodb</groupId>
-				                  <artifactId>mongo-java-driver</artifactId>
-				                </artifactItem> -->
+									<groupId>${project.groupId}</groupId>
+									<artifactId>${project.artifactId}</artifactId>
+									<version>${project.version}</version>
+									<type>${project.packaging}</type>
+									<classifier>sources</classifier>
+									<outputDirectory>${project.build.directory}/../../../dev/head/libraries-src/src</outputDirectory>
+								</artifactItem>
+								<!-- <artifactItem> <groupId>org.mongodb</groupId> <artifactId>mongo-java-driver</artifactId> 
+									</artifactItem> -->
 							</artifactItems>
 							<stripVersion>true</stripVersion>
 						</configuration>

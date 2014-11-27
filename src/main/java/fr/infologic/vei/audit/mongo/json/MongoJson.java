@@ -2,8 +2,11 @@ package fr.infologic.vei.audit.mongo.json;
 
 import static fr.infologic.vei.audit.mongo.json.JsonMerge.merge;
 
+import java.io.IOException;
+
 import org.bson.BasicBSONObject;
 
+import com.cedarsoftware.util.io.JsonWriter;
 import com.mongodb.util.JSON;
 
 import fr.infologic.vei.audit.api.AuditDriver.Content;
@@ -77,7 +80,14 @@ public class MongoJson implements Content
     @Override
     public String toString()
     {
-        return JSON.serialize(object);
+        try
+        {
+            return JsonWriter.formatJson(JSON.serialize(object));
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
     @Override
     public int hashCode()

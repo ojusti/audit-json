@@ -2,6 +2,8 @@ package fr.infologic.vei.audit.mongo.json;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
@@ -23,7 +25,7 @@ class JsonDiff
      */
     static BasicBSONObject diff(BasicBSONObject modified, BasicBSONObject original)
     {
-        BasicBSONObject patch = new BasicBSONObject();
+        SortedMap<String, Object> patch = new TreeMap<>();
         for(Map.Entry<String, Object> field : modified.entrySet())
         {
             if(field.getValue() == null)
@@ -33,14 +35,14 @@ class JsonDiff
             Object originalValue = original.get(field.getKey());
             if(originalValue == null)
             {
-                patch.append(field.getKey(), field.getValue());//add
+                patch.put(field.getKey(), field.getValue());//add
             }
             else
             {
                 Object diff = diff(field.getValue(), originalValue);
                 if(diff != null)
                 {
-                    patch.append(field.getKey(), diff);//update
+                    patch.put(field.getKey(), diff);//update
                 }
             }
         }
@@ -48,10 +50,10 @@ class JsonDiff
         {
             if(field.getValue() != null && modified.get(field.getKey()) == null)//delete
             {
-                patch.append(field.getKey(), null);
+                patch.put(field.getKey(), null);
             }
         }
-        return patch.isEmpty() ? null : patch;
+        return patch.isEmpty() ? null : new BasicBSONObject(patch);
     }
     private static Object diff(Object modified, Object original)
     {

@@ -2,6 +2,7 @@ package fr.infologic.vei.audit.mongo.json;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -37,6 +38,8 @@ public class MongoJsonTest
                          {"{a:[1,{},3]}",  "{a:[2,null]}",        "{a:[2,{}]}"},
                          {"{a:[1,2,3]}",   "{a:[{},null]}",       "{a:[{},2]}"},
                          {"{a:[1,2,3]}",   "{a:[]}",              "{a:[]}"},
+                         
+                         {"{b:2}",         "{a:3}",               "{a:3,b:2}"},
        };
                                
        return Arrays.asList((Object[][]) data);    
@@ -54,12 +57,36 @@ public class MongoJsonTest
     @Test
     public void testComputePatch()
     {
-        Assertions.assertThat(result.diff(original)).describedAs("%s - %s = %s", result, original, patch).isEqualTo(patch);
+        MongoJson computedPatch = result.diff(original);
+        Assertions.assertThat(computedPatch).describedAs("%s - %s = %s", result, original, patch).isEqualTo(patch);
+        assertThatKeysAreSortedLexicographically(computedPatch.getBSONObject());
     }
     
+    private void assertThatKeysAreSortedLexicographically(Map<String, Object> mapOfMaps)
+    {
+        if(mapOfMaps == null)
+        {
+            return;
+        }
+        String previousKey = "";
+        for(Map.Entry<String, Object> entry : mapOfMaps.entrySet())
+        { 
+            String actualKey = entry.getKey();
+            Assertions.assertThat(previousKey.compareTo(actualKey)).describedAs("%s < %s", previousKey, actualKey).isLessThan(0);
+            previousKey = actualKey;
+            Object value = entry.getValue();
+            if(value instanceof Map)
+            {
+                assertThatKeysAreSortedLexicographically((Map) value);
+            }
+        }
+    }
+
     @Test
     public void testMergePatch()
     {
-        Assertions.assertThat(patch.applyTo(original)).describedAs("%s + %s = %s", original, patch, result).isEqualTo(result);
+        MongoJson computedResult = patch.applyTo(original);
+        Assertions.assertThat(computedResult).describedAs("%s + %s = %s", original, patch, result).isEqualTo(result);
+        assertThatKeysAreSortedLexicographically(computedResult.getBSONObject());
     }
 }

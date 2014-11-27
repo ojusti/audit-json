@@ -1,6 +1,8 @@
 package fr.infologic.vei.audit.mongo.json;
 
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
@@ -18,7 +20,7 @@ class JsonMerge
         {
             return original;
         }
-        BasicBSONObject target = new BasicBSONObject();
+        SortedMap<String, Object> target = new TreeMap<>();
         for(Map.Entry<String, Object> field : patch.entrySet())
         {
             if(field.getValue() != null)
@@ -33,7 +35,7 @@ class JsonMerge
                 target.put(field.getKey(), field.getValue());
             }
         }
-        return target;
+        return new BasicBSONObject(target);
     }
     
     private static BasicBSONList merge(BasicBSONList original, BasicBSONList patch)
