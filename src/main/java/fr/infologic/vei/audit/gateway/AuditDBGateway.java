@@ -3,9 +3,9 @@ package fr.infologic.vei.audit.gateway;
 import fr.infologic.vei.audit.api.AdminDB;
 import fr.infologic.vei.audit.api.AuditTrace;
 import fr.infologic.vei.audit.api.TrailKey;
-import fr.infologic.vei.audit.engine.PatchedTrailQuery;
+import fr.infologic.vei.audit.engine.PatchedTrailFind;
+import fr.infologic.vei.audit.engine.Trail;
 import fr.infologic.vei.audit.engine.TrailEngine;
-import fr.infologic.vei.audit.engine.TrailEngine.Trail;
 
 
 class AuditDBGateway implements AuditGateway
@@ -22,7 +22,7 @@ class AuditDBGateway implements AuditGateway
     @Override
     public void trace(AuditTrace trace) 
     {
-        trailFor(trace).setContent(engine.convertContent(trace.content))
+        trailFor(trace).setContent(engine.toContent(trace.content))
                        .setMetadata(trace.metadata)
                        .save();
     }
@@ -33,9 +33,9 @@ class AuditDBGateway implements AuditGateway
     }
 
     @Override
-    public TrailQuery find(TrailKey key)
+    public TrailFind find(TrailKey key)
     {
-        return new PatchedTrailQuery(trailFor(key).query());
+        return new PatchedTrailFind(trailFor(key).find());
     }
 
     @Override
@@ -45,7 +45,7 @@ class AuditDBGateway implements AuditGateway
     }
 
     @Override
-    public TraceQueryBuilder makeQuery()
+    public TraceQueryDispatch makeQuery()
     {
         return engine.makeQuery();
     }

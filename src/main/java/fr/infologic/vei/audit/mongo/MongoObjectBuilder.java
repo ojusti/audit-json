@@ -9,7 +9,7 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 
 
-public class MongoObjectBuilder
+class MongoObjectBuilder
 {
     private BasicDBList fields = new BasicDBList();
     MongoObjectBuilder fieldEqualsTo(String field, Object requestedValue)

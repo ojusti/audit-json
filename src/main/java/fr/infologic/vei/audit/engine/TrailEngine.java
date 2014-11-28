@@ -3,26 +3,25 @@ package fr.infologic.vei.audit.engine;
 import java.util.List;
 import java.util.Map;
 
-import fr.infologic.vei.audit.api.AuditDriver.Content;
-import fr.infologic.vei.audit.api.AuditDriver.TrailQuery;
-import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
-import fr.infologic.vei.audit.api.QueryDriver.TraceQueryBuilder;
+import fr.infologic.vei.audit.api.AuditFind.Content;
+import fr.infologic.vei.audit.api.AuditFind.TrailFind;
+import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
+import fr.infologic.vei.audit.api.AuditQuery;
 
-public interface TrailEngine
+public interface TrailEngine extends AuditQuery
 {
     TrailType type(String type);
+    void save(TrailTrace trace);
+    Content toContent(String object);
     
-    interface Trail
-    {
-        TrailRecord setContent(Content json);
-        PatchableTrailQuery query();
-    }
+    PatchableTrailFind find(String type, String key);
+    
     interface TrailRecord
     {
         TrailRecord setMetadata(Map<String, Object> metadata);
         void save();
     }
-    public interface PatchableTrailQuery extends TrailQuery
+    interface PatchableTrailFind extends TrailFind
     {
         @Override
         PatchableTrailTrace last();
@@ -31,15 +30,12 @@ public interface TrailEngine
         @Override
         List<? extends PatchableTrailTrace> allFromVersion(int minVersion);
     }
-    public interface PatchableTrailTrace extends TrailTrace, Content
+    interface PatchableTrailTrace extends TrailTrace, Content
     {
         @Override
         PatchableTrailTrace diff(Content original);
         @Override
         PatchableTrailTrace applyTo(Content original);
     }
-    PatchableTrailQuery query(String type, String key);
-    void save(TrailTrace trace);
-    Content convertContent(String object);
-    TraceQueryBuilder makeQuery();
+    
 }

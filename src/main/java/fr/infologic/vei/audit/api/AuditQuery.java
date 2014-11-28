@@ -3,18 +3,32 @@ package fr.infologic.vei.audit.api;
 import java.util.List;
 import java.util.Set;
 
-import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
+import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
 
-public interface QueryDriver
+public interface AuditQuery
 {
-    TraceQueryBuilder makeQuery();
+    TraceQueryDispatch makeQuery();
     
+    public interface TraceQueryDispatch
+    {
+        TraceFieldQueryBuilder forModificationsOf(String field);
+        TraceAllQueryBuilder forAllModifications();
+    }
+    
+    public interface TraceFieldQueryBuilder
+    {
+        TraceQueryBuilder inType(String requestedType);
+    }
+    
+    public interface TraceAllQueryBuilder extends TraceQueryBuilder
+    {
+        TraceQueryBuilder ofAnyTypeInSet(Set<String> requestedTypes);
+    }
     public interface TraceQueryBuilder
     {
-        TraceQueryBuilder inTypes(Set<String> requestedTypes);
-        TraceQueryBuilder keyEqualsTo(String requestedKey);
+        TraceQueryBuilder havingKeyEqualsTo(String requestedKey);
 //        TraceQueryBuilder keyMatches(String regExp);
-        TraceMetadataQueryBuilder metadata();
+        TraceMetadataQueryBuilder havingMetadata();
         TraceQuery build();
     }
     

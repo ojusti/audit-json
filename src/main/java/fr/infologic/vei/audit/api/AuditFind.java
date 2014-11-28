@@ -3,12 +3,11 @@ package fr.infologic.vei.audit.api;
 import java.util.List;
 import java.util.Map;
 
-public interface AuditDriver
+public interface AuditFind
 {
-    void trace(AuditTrace trace);
-    TrailQuery find(TrailKey key);
+    TrailFind find(TrailKey key);
     
-    public interface TrailQuery
+    public interface TrailFind
     {
         TrailTrace last();
         /** shortcut from allFromVersion(1) */

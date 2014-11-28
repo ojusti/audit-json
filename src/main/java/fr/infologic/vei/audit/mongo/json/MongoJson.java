@@ -9,7 +9,7 @@ import org.bson.BasicBSONObject;
 import com.cedarsoftware.util.io.JsonWriter;
 import com.mongodb.util.JSON;
 
-import fr.infologic.vei.audit.api.AuditDriver.Content;
+import fr.infologic.vei.audit.api.AuditFind.Content;
 
 public class MongoJson implements Content
 {

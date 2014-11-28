@@ -2,6 +2,8 @@ package fr.infologic.vei.audit.mongo;
 
 import static fr.infologic.vei.audit.mongo.MongoObject.KEY;
 import static fr.infologic.vei.audit.mongo.MongoObject.VERSION;
+import static fr.infologic.vei.audit.mongo.MongoObject.toList;
+import static fr.infologic.vei.audit.mongo.MongoObject.toObject;
 
 import java.util.List;
 
@@ -10,14 +12,14 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailQuery;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailFind;
 
-class MongoQuery implements PatchableTrailQuery
+class MongoFind implements PatchableTrailFind
 {
     private final DBCollection collection;
     private final String key;
 
-    MongoQuery(DBCollection collection, String key)
+    MongoFind(DBCollection collection, String key)
     {
         this.collection = collection;
         this.key = key;
@@ -26,38 +28,38 @@ class MongoQuery implements PatchableTrailQuery
     @Override
     public MongoObject last()
     {
-        return MongoObject.object(collection.getName(), _last());
+        return toObject(collection.getName(), lastTrace());
     }
     
     @Override
     public List<MongoObject> all()
     {
-        return MongoObject.list(collection.getName(), trace().sort(asc(VERSION)));
+        return toList(collection.getName(), trail().sort(asc()));
     }
     
     @Override
     public List<MongoObject> allFromVersion(int minVersion)
     {
-        return MongoObject.list(collection.getName(), trace().skip(minVersion - 1).sort(asc(VERSION)));
+        return toList(collection.getName(), trail().skip(minVersion - 1).sort(asc()));
     }
 
-    private DBObject _last()
+    private DBObject lastTrace()
     {
-        return trace().sort(desc(VERSION)).one();
+        return trail().sort(desc()).one();
     }
 
-    private DBCursor trace()
+    private DBCursor trail()
     {
         return collection.find(eq(KEY, key));
     }
 
-    private static DBObject desc(String key)
+    private static DBObject desc()
     {
-        return eq(key, -1);
+        return eq(VERSION, -1);
     } 
-    private static DBObject asc(String key)
+    private static DBObject asc()
     {
-        return eq(key, 1);
+        return eq(VERSION, 1);
     } 
     private static DBObject eq(String key, Object value)
     {

@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import fr.infologic.vei.audit.TestAuditJsonObject;
-import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
-import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailQuery;
+import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailFind;
 import fr.infologic.vei.audit.mongo.json.MongoJson;
 
 
@@ -21,7 +21,7 @@ public class PatchTrailTest
     public void setUpTrailWithOneTrace()
     {
         type = mock(TrailType.class);
-        PatchableTrailQuery query = mock(PatchableTrailQuery.class);
+        PatchableTrailFind query = mock(PatchableTrailFind.class);
         when(type.query("key")).thenReturn(query);
         
         TestAuditJsonObject version1 = make().withContent("{a:1,b:2}");

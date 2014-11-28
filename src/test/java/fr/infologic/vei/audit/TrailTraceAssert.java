@@ -9,8 +9,8 @@ import org.assertj.core.api.ObjectAssert;
 import org.assertj.core.internal.StandardComparisonStrategy;
 import org.assertj.core.util.Objects;
 
-import fr.infologic.vei.audit.api.AuditDriver.Content;
-import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
+import fr.infologic.vei.audit.api.AuditFind.Content;
+import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
 import fr.infologic.vei.audit.mongo.json.MongoJson;
 
 public class TrailTraceAssert extends ObjectAssert<TrailTrace>

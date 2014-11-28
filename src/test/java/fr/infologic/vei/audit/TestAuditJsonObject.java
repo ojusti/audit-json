@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import fr.infologic.vei.audit.api.AuditDriver.Content;
-import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
+import fr.infologic.vei.audit.api.AuditFind.Content;
+import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
 import fr.infologic.vei.audit.api.AuditTrace;
 import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailTrace;
 import fr.infologic.vei.audit.mongo.json.MongoJson;

@@ -3,25 +3,25 @@ package fr.infologic.vei.audit.engine;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.infologic.vei.audit.api.AuditDriver.Content;
-import fr.infologic.vei.audit.api.AuditDriver.TrailQuery;
-import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
-import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailQuery;
+import fr.infologic.vei.audit.api.AuditFind.Content;
+import fr.infologic.vei.audit.api.AuditFind.TrailFind;
+import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailFind;
 import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailTrace;
 
-public class PatchedTrailQuery implements TrailQuery
+public class PatchedTrailFind implements TrailFind
 {
-    private final PatchableTrailQuery query;
+    private final PatchableTrailFind find;
     
-    public PatchedTrailQuery(PatchableTrailQuery query)
+    public PatchedTrailFind(PatchableTrailFind find)
     {
-        this.query = query;
+        this.find = find;
     }
 
     @Override
     public TrailTrace last()
     {
-        return query.last();
+        return find.last();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class PatchedTrailQuery implements TrailQuery
     @Override
     public List<? extends TrailTrace> allFromVersion(int minVersion)
     {
-        List<? extends PatchableTrailTrace> content = query.allFromVersion(minVersion);
+        List<? extends PatchableTrailTrace> content = find.allFromVersion(minVersion);
         if(containsPatches(content))
         {
             return patch(content);

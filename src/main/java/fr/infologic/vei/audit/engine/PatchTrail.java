@@ -2,18 +2,16 @@ package fr.infologic.vei.audit.engine;
 
 import java.util.Map;
 
-import fr.infologic.vei.audit.api.AuditDriver.Content;
-import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
-import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailQuery;
+import fr.infologic.vei.audit.api.AuditFind.Content;
+import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailFind;
 import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailTrace;
-import fr.infologic.vei.audit.engine.TrailEngine.Trail;
 import fr.infologic.vei.audit.engine.TrailEngine.TrailRecord;
 
 class PatchTrail implements Trail, TrailTrace, TrailRecord
 {
     private final TrailType type;
     private final String key;
-    private PatchableTrailQuery query;
     private Content content;
     private Map<String, Object> metadata;
     private int version;
@@ -41,7 +39,7 @@ class PatchTrail implements Trail, TrailTrace, TrailRecord
     @Override
     public void save()
     {
-        PatchableTrailTrace lastTrace = query().last();
+        PatchableTrailTrace lastTrace = find().last();
         if(lastTrace == null)
         {
             this.version = 1;
@@ -55,13 +53,9 @@ class PatchTrail implements Trail, TrailTrace, TrailRecord
     }
 
     @Override
-    public PatchableTrailQuery query()
+    public PatchableTrailFind find()
     {
-        if(query == null)
-        {
-            query = type.query(key);
-        }
-        return query;
+        return type.query(key);
     }
 
     @Override

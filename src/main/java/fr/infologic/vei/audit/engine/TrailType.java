@@ -1,8 +1,7 @@
 package fr.infologic.vei.audit.engine;
 
-import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
-import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailQuery;
-import fr.infologic.vei.audit.engine.TrailEngine.Trail;
+import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailFind;
 
 
 public class TrailType
@@ -21,9 +20,9 @@ public class TrailType
         return new PatchTrail(this, key);
     }
 
-    PatchableTrailQuery query(String key)
+    PatchableTrailFind query(String key)
     {
-        return db.query(type, key);
+        return db.find(type, key);
     }
 
     void save(TrailTrace trace)

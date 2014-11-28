@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import fr.infologic.vei.audit.TestAuditJsonObject;
 import fr.infologic.vei.audit.TrailTraceAssert;
-import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
+import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
 import fr.infologic.vei.audit.api.TrailKey;
 
 
@@ -65,7 +65,7 @@ public class AuditDBGatewayTest
         
         object.withContent(null);
         
-        List<TrailTrace> result = gateway.makeQuery().metadata().fieldEqualsTo("key1", "value1").fieldGreaterThan("key2", "value").build().search();
+        List<TrailTrace> result = gateway.makeQuery().forAllModifications().havingMetadata().fieldEqualsTo("key1", "value1").fieldGreaterThan("key2", "value").build().search();
         TrailTraceAssert.assertThat(result).containsExactly(object);
     }
     

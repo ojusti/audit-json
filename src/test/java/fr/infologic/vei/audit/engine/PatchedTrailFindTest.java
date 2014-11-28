@@ -17,10 +17,10 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailQuery;
+import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailFind;
 
 @RunWith(Parameterized.class)
-public class PatchedTrailQueryTest
+public class PatchedTrailFindTest
 {
     @Parameters
     public static Collection<Object[]> data() 
@@ -39,12 +39,12 @@ public class PatchedTrailQueryTest
     public String[] current;
     @Parameter(2)
     public String[] patched;
-    private PatchableTrailQuery patchTrail;
+    private PatchableTrailFind patchTrail;
 
     @Before
     public void setUpOriginalContent()
     {
-        patchTrail = mock(PatchableTrailQuery.class);
+        patchTrail = mock(PatchableTrailFind.class);
         when(patchTrail.allFromVersion(1)).thenReturn(trailOf(patches));
     }
     private List trailOf(String[] content)
@@ -56,7 +56,7 @@ public class PatchedTrailQueryTest
     @Test
     public void given_more_than_one_trace_When_query_all_Then_patches_are_applied()
     {
-        List patchedContent = new PatchedTrailQuery(patchTrail).all();
+        List patchedContent = new PatchedTrailFind(patchTrail).all();
         Assertions.assertThat(patchedContent).isEqualTo(trailOf(patched));
     }
 }

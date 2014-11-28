@@ -1,12 +1,12 @@
 package fr.infologic.vei.audit.mongo;
 
 import static com.mongodb.BasicDBObjectBuilder.start;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
@@ -16,8 +16,8 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
-import fr.infologic.vei.audit.api.AuditDriver.Content;
-import fr.infologic.vei.audit.api.AuditDriver.TrailTrace;
+import fr.infologic.vei.audit.api.AuditFind.Content;
+import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
 import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailTrace;
 import fr.infologic.vei.audit.mongo.json.MongoJson;
 
@@ -112,11 +112,11 @@ class MongoObject implements PatchableTrailTrace
         return String.format("MongoObject [type=%s, object=%s]", type, object);
     }
 
-    static List<MongoObject> list(String type, DBCursor it)
+    static List<MongoObject> toList(String type, DBCursor it)
     {
         try
         {
-            return stream(it.spliterator(), false).map(o -> new MongoObject(type, o)).collect(toList());
+            return stream(it.spliterator(), false).map(o -> new MongoObject(type, o)).collect(Collectors.toList());
         }
         finally
         {
@@ -124,7 +124,7 @@ class MongoObject implements PatchableTrailTrace
         }
     }
 
-    static MongoObject object(String type, DBObject object)
+    static MongoObject toObject(String type, DBObject object)
     {
         return object == null ? null : new MongoObject(type, object);
     }
