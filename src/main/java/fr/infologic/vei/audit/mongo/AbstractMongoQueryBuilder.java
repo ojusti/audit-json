@@ -1,6 +1,7 @@
 package fr.infologic.vei.audit.mongo;
 
 import static com.mongodb.BasicDBObjectBuilder.start;
+import static fr.infologic.vei.audit.mongo.MongoObjectBuilder.and;
 
 import com.mongodb.BasicDBObjectBuilder;
 
@@ -27,7 +28,7 @@ abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
     
     private class MongoMetadataQueryBuilder implements TraceMetadataQueryBuilder
     {
-        private final MongoObjectBuilder content = new MongoObjectBuilder();
+        private final MongoObjectBuilder content = and();
 
         @Override
         public TraceMetadataQueryBuilder fieldEqualsTo(String field, Object requestedValue)

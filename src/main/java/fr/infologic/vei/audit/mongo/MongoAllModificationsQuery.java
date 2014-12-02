@@ -1,14 +1,15 @@
 package fr.infologic.vei.audit.mongo;
 
+import static com.mongodb.BasicDBObjectBuilder.start;
+import static fr.infologic.vei.audit.mongo.MongoObject.CONTENT;
+import static fr.infologic.vei.audit.mongo.MongoObject._ID;
 import static fr.infologic.vei.audit.mongo.MongoObject.toList;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.StreamSupport.stream;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 
@@ -19,7 +20,7 @@ import fr.infologic.vei.audit.api.AuditQuery.TraceQueryBuilder;
 
 class MongoAllModificationsQuery extends AbstractMongoQueryBuilder implements TraceAllQueryBuilder, TraceQuery
 {
-    private final DB db;
+    protected final DB db;
     private Set<String> requestedCollectionNames;
     MongoAllModificationsQuery(DB db)
     {
@@ -42,7 +43,7 @@ class MongoAllModificationsQuery extends AbstractMongoQueryBuilder implements Tr
     @Override
     public List<TrailTrace> search()
     {
-        return matchingCollections().map(this::tracesWithoutContent).flatMap(traces -> traces.stream()).collect(toList());
+        return matchingCollections().map(this::tracesWithoutContent).flatMap(List::stream).collect(toList());
     }
     
     private Stream<DBCollection> matchingCollections()
@@ -52,16 +53,16 @@ class MongoAllModificationsQuery extends AbstractMongoQueryBuilder implements Tr
         {
             allCollectionNames.retainAll(requestedCollectionNames);
         }
-        return stream(allCollectionNames.spliterator(), false).filter(name -> !isSystemCollection(name)).map(name -> db.getCollection(name));
+        return allCollectionNames.stream().filter(MongoAllModificationsQuery::isUserCollection).map(db::getCollection);
     }
 
-    private static boolean isSystemCollection(String name)
+    private static boolean isUserCollection(String name)
     {
-        return name.startsWith("system.");
+        return !name.startsWith("system.");
     }
 
     private List<MongoObject> tracesWithoutContent(DBCollection collection)
     {
-        return toList(collection.getName(), collection.find(query.get(), new BasicDBObject(MongoObject.CONTENT, 0)));
+        return toList(collection.getName(), collection.find(query.get(), start(_ID, false).add(CONTENT, false).get()));
     }
 }

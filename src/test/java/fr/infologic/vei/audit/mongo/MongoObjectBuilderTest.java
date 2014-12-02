@@ -1,5 +1,7 @@
 package fr.infologic.vei.audit.mongo;
 
+import static fr.infologic.vei.audit.mongo.MongoObjectBuilder.and;
+
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +19,7 @@ public class MongoObjectBuilderTest
     @Test
     public void oneElementQuery()
     {
-        result = resultOf(new MongoObjectBuilder().fieldEqualsTo("field", "value"));
+        result = resultOf(and().fieldEqualsTo("field", "value"));
         assertSingleton(result.toMap(), "field", "value");
     }
 
@@ -29,14 +31,14 @@ public class MongoObjectBuilderTest
     @Test
     public void emptyQuery()
     {
-        result = resultOf(new MongoObjectBuilder());
+        result = resultOf(and());
         Assertions.assertThat(result.toMap()).isEmpty();
     }
 
     @Test
     public void twoElementsQuery()
     {
-        result = resultOf(new MongoObjectBuilder().fieldEqualsTo("field", "value").fieldEqualsTo("field", "value"));
+        result = resultOf(and().fieldEqualsTo("field", "value").fieldEqualsTo("field", "value"));
         assertSingletonWithKey("$and");
         List<Map> values = (List<Map>) getValue("$and");
         Assertions.assertThat(values).hasSize(2);
@@ -47,7 +49,7 @@ public class MongoObjectBuilderTest
     @Test
     public void greaterThanQuery()
     {
-        result = resultOf(new MongoObjectBuilder().fieldGreaterThan("field", "value"));
+        result = resultOf(and().fieldGreaterThan("field", "value"));
         assertSingletonWithKey("field");
         Map values = (Map) getValue("field");
         assertSingleton(values, "$gt", "value");
@@ -56,7 +58,7 @@ public class MongoObjectBuilderTest
     @Test
     public void lessThanQuery()
     {
-        result = resultOf(new MongoObjectBuilder().fieldLessThan("field", "value"));
+        result = resultOf(and().fieldLessThan("field", "value"));
         assertSingletonWithKey("field");
         Map values = (Map) getValue("field");
         assertSingleton(values, "$lt", "value");

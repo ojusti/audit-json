@@ -27,28 +27,26 @@ public class AuditDBGatewayTest
     }
     
     @Test
-    public void traceAndRetrieveADocument()
+    public void traceAndFindADocument()
     {
-        TestAuditJsonObject object = make().addMetadata("key", "value");
-        gateway.trace(object);
+        TestAuditJsonObject v1;
+        gateway.trace(v1 = make().addMetadata("key", "value"));
 
-        TrailKey key = object;
-        TrailTrace persisted = gateway.find(key).last();
-        TrailTraceAssert.assertThat(persisted).hasKey(object.key)
-                                                   .hasType(object.type)
-                                                   .hasMetadata(object.metadata)
-                                                   .hasContent(object.content)
-                                                   .isEqualTo(object);
+        TrailKey key = v1;
+        TrailTrace trace = gateway.find(key).last();
+        TrailTraceAssert.assertThat(trace).hasKey(v1.key)
+                                          .hasType(v1.type)
+                                          .hasMetadata(v1.metadata)
+                                          .hasContent(v1.content)
+                                          .isEqualTo(v1);
     }
     
     @Test
-    public void traceAPatchAndRetrieveAllVersions()
+    public void traceAPatchAndFindAllVersions()
     {
-        TestAuditJsonObject v1 = make().withContent("{a:1}");
-        gateway.trace(v1);
-        
-        TestAuditJsonObject v2 = make().withContent("{a:2,b:3}");
-        gateway.trace(v2);
+        TestAuditJsonObject v1, v2;
+        gateway.trace(v1 = make().withContent("{a:1}"));
+        gateway.trace(v2 = make().withContent("{a:2,b:3}"));
 
         TrailKey key = v1;
         List<? extends TrailTrace> persisted = gateway.find(key).all();
@@ -56,17 +54,15 @@ public class AuditDBGatewayTest
     }
     
     @Test
-    public void traceAndSearchForADocument()
+    public void traceAndQueryForADocument()
     {
-        gateway.trace(make().addMetadata("key1", "value1").addMetadata("key2", "0value"));
+        @SuppressWarnings("unused")
+        TestAuditJsonObject v1, v2;
+        gateway.trace(v1 = make().addMetadata("key1", "value1").addMetadata("key2", "0value"));
+        gateway.trace(v2 = make().addMetadata("key1", "value1").addMetadata("key2", "value2").withContent("{a:3}"));
         
-        TestAuditJsonObject object = make().addMetadata("key1", "value1").addMetadata("key2", "value2").withContent("{a:3}");
-        gateway.trace(object);
-        
-        object.withContent(null);
-        
-        List<TrailTrace> result = gateway.makeQuery().forAllModifications().havingMetadata().fieldEqualsTo("key1", "value1").fieldGreaterThan("key2", "value").build().search();
-        TrailTraceAssert.assertThat(result).containsExactly(object);
+        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().havingMetadata().fieldEqualsTo("key1", "value1").fieldGreaterThan("key2", "value").build().search();
+        TrailTraceAssert.assertThat(traces).containsExactly(v2.withContent(null));
     }
     
     @After

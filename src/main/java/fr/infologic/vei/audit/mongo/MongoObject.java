@@ -1,18 +1,20 @@
 package fr.infologic.vei.audit.mongo;
 
 import static com.mongodb.BasicDBObjectBuilder.start;
-import static java.util.stream.StreamSupport.stream;
+import static java.util.Spliterators.spliteratorUnknownSize;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
+import com.mongodb.Cursor;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -23,6 +25,7 @@ import fr.infologic.vei.audit.mongo.json.MongoJson;
 
 class MongoObject implements PatchableTrailTrace
 {
+    static final String _ID = "_id";
     static final String VERSION = "version";
     static final String KEY = "key";
     static final String CONTENT = "content";
@@ -112,16 +115,21 @@ class MongoObject implements PatchableTrailTrace
         return String.format("MongoObject [type=%s, object=%s]", type, object);
     }
 
-    static List<MongoObject> toList(String type, DBCursor it)
+    static List<MongoObject> toList(String type, Cursor it)
     {
         try
         {
-            return stream(it.spliterator(), false).map(o -> new MongoObject(type, o)).collect(Collectors.toList());
+            return stream(it).map(o -> new MongoObject(type, o)).collect(Collectors.toList());
         }
         finally
         {
             it.close();
         }
+    }
+
+    private static Stream<DBObject> stream(Cursor it)
+    {
+        return StreamSupport.stream(spliteratorUnknownSize(it, 0), false);
     }
 
     static MongoObject toObject(String type, DBObject object)
