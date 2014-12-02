@@ -16,7 +16,7 @@ import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
 
 public class SearchByContentTest
 {
-    private TestAuditJsonObject v1, v2, v3, v4;
+    private TestAuditJsonObject v1, v2, v4;
     
     @Before
     public void setUp()
@@ -24,12 +24,8 @@ public class SearchByContentTest
         setUpGateway();
         gateway.trace(v1 = make().addMetadata("version", 1).withContent("{a:1}"));
         gateway.trace(v2 = make().addMetadata("version", 2).withContent("{}"));
-        gateway.trace(v3 = make().addMetadata("version", 3).withContent("{}"));
+        gateway.trace(/*v3 =*/make().addMetadata("version", 3).withContent("{}"));
         gateway.trace(v4 = make().addMetadata("version", 4).withContent("{a:1}"));
-        v1.withContent(null);
-        v2.withContent(null);
-        v3.withContent(null);
-        v4.withContent(null);
     }
     @Test
     public void searchADocumentByContent()
@@ -59,11 +55,11 @@ public class SearchByContentTest
     public void searchFindsTwoDocuments()
     {
         TestAuditJsonObject another;
-        gateway.trace(another = new TestAuditJsonObject("type", "another").addMetadata("version", "another").withContent("{a:1}"));
-        another.withContent(null);
+        gateway.trace(another = new TestAuditJsonObject("type", "another").addMetadata("version", "another").withContent("{a:1, b:2}"));
+
         List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type").build().search();
         
-        TrailTraceAssert.assertThat(traces).hasSize(4).containsExactly(v1, v2, v4, another);
+        TrailTraceAssert.assertThat(traces).hasSize(4).containsExactly(v1, v2, v4, another.withContent("{a:1}"));
     }
 
     private AuditGateway gateway;

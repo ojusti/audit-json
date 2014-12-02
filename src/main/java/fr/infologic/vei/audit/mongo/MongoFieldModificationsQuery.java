@@ -63,6 +63,12 @@ class MongoFieldModificationsQuery extends MongoAllModificationsQuery
         return super.search();
     }
     
+    @Override
+    protected DBObject traceProjection()
+    {
+        return start(_ID, false).add(KEY, true).add(VERSION, true).add(MongoObject.METADATA, true).add(field(), true).get();
+    }
+    
     private static MongoObjectBuilder buildKeyQuery(Cursor it)
     {
         try

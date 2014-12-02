@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 
 import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
 import fr.infologic.vei.audit.api.AuditQuery.TraceAllQueryBuilder;
@@ -43,7 +44,7 @@ class MongoAllModificationsQuery extends AbstractMongoQueryBuilder implements Tr
     @Override
     public List<TrailTrace> search()
     {
-        return matchingCollections().map(this::tracesWithoutContent).flatMap(List::stream).collect(toList());
+        return matchingCollections().map(this::traces).flatMap(List::stream).collect(toList());
     }
     
     private Stream<DBCollection> matchingCollections()
@@ -61,8 +62,13 @@ class MongoAllModificationsQuery extends AbstractMongoQueryBuilder implements Tr
         return !name.startsWith("system.");
     }
 
-    private List<MongoObject> tracesWithoutContent(DBCollection collection)
+    private List<MongoObject> traces(DBCollection collection)
     {
-        return toList(collection.getName(), collection.find(query.get(), start(_ID, false).add(CONTENT, false).get()));
+        return toList(collection.getName(), collection.find(query.get(), traceProjection()));
+    }
+
+    protected DBObject traceProjection()
+    {
+        return start(_ID, false).add(CONTENT, false).get();
     }
 }
