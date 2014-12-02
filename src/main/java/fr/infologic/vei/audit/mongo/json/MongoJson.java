@@ -80,6 +80,10 @@ public class MongoJson implements Content
     @Override
     public String toString()
     {
+        if(object == null)
+        {
+            return null;
+        }
         try
         {
             return JsonWriter.formatJson(JSON.serialize(object));
