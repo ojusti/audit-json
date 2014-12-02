@@ -3,6 +3,8 @@ package fr.infologic.vei.audit.mongo;
 import static com.mongodb.BasicDBObjectBuilder.start;
 import static fr.infologic.vei.audit.mongo.MongoObjectBuilder.and;
 
+import java.util.regex.Pattern;
+
 import com.mongodb.BasicDBObjectBuilder;
 
 import fr.infologic.vei.audit.api.AuditQuery.TraceMetadataQueryBuilder;
@@ -17,6 +19,13 @@ abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
     public TraceQueryBuilder havingKeyEqualsTo(String requestedKey)
     {
         query.append(MongoObject.KEY, requestedKey);
+        return this;
+    }
+    
+    @Override
+    public TraceQueryBuilder havingKeyMatches(Pattern regExp)
+    {
+        query.append(MongoObject.KEY, regExp);
         return this;
     }
     

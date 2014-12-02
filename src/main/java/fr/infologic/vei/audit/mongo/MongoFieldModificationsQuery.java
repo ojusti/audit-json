@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -31,7 +32,7 @@ import fr.infologic.vei.audit.api.AuditQuery.TraceQueryBuilder;
 class MongoFieldModificationsQuery extends MongoAllModificationsQuery
 {
     private String requestedType;
-    private String requestedKey;
+    private Object requestedKey;
     private String field;
     private static final AggregationOptions USE_CURSOR = AggregationOptions.builder().outputMode(AggregationOptions.OutputMode.CURSOR).build();
     private static final String FIELD_IS_NULL = "isNull";
@@ -49,6 +50,13 @@ class MongoFieldModificationsQuery extends MongoAllModificationsQuery
     {
         this.requestedKey = requestedKey;
         return this;
+    }
+    
+    @Override
+    public TraceQueryBuilder havingKeyMatches(Pattern regExp)
+    {
+        this.requestedKey = regExp;
+        return super.havingKeyMatches(regExp);
     }
 
     @Override

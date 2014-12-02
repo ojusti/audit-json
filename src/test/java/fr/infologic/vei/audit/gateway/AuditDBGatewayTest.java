@@ -3,6 +3,7 @@ package fr.infologic.vei.audit.gateway;
 import static fr.infologic.vei.audit.TestAuditJsonObject.make;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.Assume;
@@ -64,6 +65,20 @@ public class AuditDBGatewayTest
         List<TrailTrace> traces = gateway.makeQuery().forAllModifications().havingMetadata().fieldEqualsTo("key1", "value1").fieldGreaterThan("key2", "value").build().search();
         TrailTraceAssert.assertThat(traces).containsExactly(v2.withContent(null));
     }
+    
+    @Test
+    public void traceAndQueryForADocumentWithRegExp()
+    {
+        @SuppressWarnings("unused")
+        TestAuditJsonObject v1, v2;
+        gateway.trace(v1 = make().addMetadata("key1", "value1"));
+        gateway.trace(v2 = new TestAuditJsonObject("type", "0key").withContent("{a:3}"));
+        
+        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().havingKeyMatches(Pattern.compile("^k")).build().search();
+        TrailTraceAssert.assertThat(traces).containsExactly(v1.withContent(null));
+    }
+    
+    
     
     @After
     public void tearDownDriver()

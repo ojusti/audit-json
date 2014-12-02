@@ -2,6 +2,7 @@ package fr.infologic.vei.audit.api;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
 
@@ -27,7 +28,7 @@ public interface AuditQuery
     public interface TraceQueryBuilder
     {
         TraceQueryBuilder havingKeyEqualsTo(String requestedKey);
-//        TraceQueryBuilder keyMatches(String regExp);
+        TraceQueryBuilder havingKeyMatches(Pattern regExp);
         TraceMetadataQueryBuilder havingMetadata();
         TraceQuery build();
     }
