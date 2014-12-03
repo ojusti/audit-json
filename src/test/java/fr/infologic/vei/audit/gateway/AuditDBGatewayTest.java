@@ -3,6 +3,9 @@ package fr.infologic.vei.audit.gateway;
 import static fr.infologic.vei.audit.TestAuditJsonObject.make;
 import static java.util.function.Function.identity;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -43,6 +46,17 @@ public class AuditDBGatewayTest
                                           .hasMetadata(v1.metadata)
                                           .hasContent(v1.content)
                                           .isEqualTo(v1);
+    }
+    
+    @Test
+    public void searchADocumentUsingTimestamps()
+    {
+        TestAuditJsonObject v1;
+        long timestamp = new Date().getTime();
+        gateway.trace(v1 = make().addMetadata("date", new Timestamp(timestamp)));
+
+        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().havingMetadata().fieldLessThan("date", new Timestamp(timestamp + 1)).build().search();
+        TrailTraceAssert.assertThat(traces).containsExactly(v1.withContent(null));
     }
     
     @Test
