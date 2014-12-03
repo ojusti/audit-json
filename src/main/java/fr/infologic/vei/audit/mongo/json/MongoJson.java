@@ -51,7 +51,7 @@ public class MongoJson implements Content
         {
             return (MongoJson) content;
         }
-        return MongoJson.fromString(content.toString());
+        return MongoJson.fromString(content.asString());
     }
     /**
      * Based on RFC-7396 + recursive algorithm for objects and arrays + array support (arrays' elements are merged one by one)
@@ -79,6 +79,12 @@ public class MongoJson implements Content
     
     @Override
     public String toString()
+    {
+        return String.valueOf(object);
+    }
+    
+    @Override
+    public String asString()
     {
         if(object == null)
         {

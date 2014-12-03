@@ -82,7 +82,7 @@ public class TestAuditJsonObject extends AuditTrace implements PatchableTrailTra
         TestAuditJsonObject diff = new TestAuditJsonObject(type, key);
         diff.metadata = metadata;
         diff.json = json.diff(original);
-        diff.content = diff.json.toString();
+        diff.content = diff.json.asString();
         return diff;
     }
     
@@ -92,7 +92,12 @@ public class TestAuditJsonObject extends AuditTrace implements PatchableTrailTra
         TestAuditJsonObject merge = new TestAuditJsonObject(type, key);
         merge.metadata = metadata;
         merge.json = json.applyTo(original);
-        merge.content = merge.json.toString();
+        merge.content = merge.json.asString();
         return merge;
+    }
+    @Override
+    public String asString()
+    {
+        return toString();
     }
 }

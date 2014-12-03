@@ -23,5 +23,6 @@ public interface AuditFind
     {
         Content applyTo(Content original);
         Content diff(Content original);
+        String asString();
     }
 }

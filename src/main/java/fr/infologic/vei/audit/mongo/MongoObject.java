@@ -156,7 +156,14 @@ class MongoObject implements PatchableTrailTrace
         {
             return ((MongoJson) object).getBSONObject();
         }
-        return (BSONObject) JSON.parse(object.toString());
+        return (BSONObject) JSON.parse(object.asString());
+    }
+    
+    @Override
+    public String asString()
+    {
+        return String.format("AuditTrace [type=%s, key=%s, version=%d, metadata=%s, content=%s]",
+                      type, getKey(), getMetadata(), getVersion(), getContent().asString());
     }
 
 }
