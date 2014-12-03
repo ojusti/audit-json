@@ -2,7 +2,15 @@ package fr.infologic.vei.audit.api;
 
 public interface AdminDB
 {
-    void drop();
-    void close();
+    void drop() throws AdminDBException;
+    void close() throws AdminDBException;
     boolean isAlive();
+    
+    class AdminDBException extends Exception
+    {
+        public AdminDBException(Throwable cause)
+        {
+            super(cause);
+        }
+    }
 }

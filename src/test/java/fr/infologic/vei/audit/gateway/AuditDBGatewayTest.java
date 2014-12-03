@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import fr.infologic.vei.audit.TestAuditJsonObject;
 import fr.infologic.vei.audit.TrailTraceAssert;
+import fr.infologic.vei.audit.api.AdminDB.AdminDBException;
 import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
 import fr.infologic.vei.audit.api.TrailKey;
 
@@ -24,7 +25,7 @@ public class AuditDBGatewayTest
     private AuditGateway gateway;
     
     @Before
-    public void setUpGateway()
+    public void setUpGateway() throws AdminDBException
     {
         gateway = gateway();
     }
@@ -93,17 +94,17 @@ public class AuditDBGatewayTest
     }
     
     @After
-    public void tearDownDriver()
+    public void tearDownDriver() throws AdminDBException
     {
         gateway.db().drop();
     }
     
     @BeforeClass
-    public static void isAlive()
+    public static void isAlive() throws AdminDBException
     {
         Assume.assumeTrue(gateway().db().isAlive());
     }
-    private static AuditGateway gateway()
+    private static AuditGateway gateway() throws AdminDBException
     {
         return MongoAuditGatewayBuilder.db(AuditDBGatewayTest.class.getSimpleName()).build();
     }

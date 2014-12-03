@@ -19,12 +19,12 @@ public class MongoDB implements TrailEngine, AdminDB
 {
     private final MongoClient mongo;
     private final DB db;
-    public MongoDB()
+    public MongoDB() throws AdminDBException
     {
         this(null, null, "audit");
     }
     
-    public MongoDB(String host, Integer port, String db)
+    public MongoDB(String host, Integer port, String db) throws AdminDBException
     {
         try
         {
@@ -33,7 +33,7 @@ public class MongoDB implements TrailEngine, AdminDB
         }
         catch (UnknownHostException e)
         {
-            throw new RuntimeException(e);
+            throw new AdminDBException(e);
         }
     }
 
@@ -68,7 +68,7 @@ public class MongoDB implements TrailEngine, AdminDB
     }
     
     @Override
-    public void drop()
+    public void drop() throws AdminDBException
     {
         try
         {
@@ -77,12 +77,12 @@ public class MongoDB implements TrailEngine, AdminDB
         }
         catch(MongoException e)
         {
-            e.printStackTrace();
+            throw new AdminDBException(e);
         }
     }
     
     @Override
-    public void close()
+    public void close() throws AdminDBException
     {
         try
         {
@@ -90,7 +90,7 @@ public class MongoDB implements TrailEngine, AdminDB
         }
         catch(MongoException e)
         {
-            e.printStackTrace();
+            throw new AdminDBException(e);
         }
     }
 

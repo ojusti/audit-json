@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import fr.infologic.vei.audit.TestAuditJsonObject;
 import fr.infologic.vei.audit.TrailTraceAssert;
+import fr.infologic.vei.audit.api.AdminDB.AdminDBException;
 import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
 
 public class SearchByContentTest
@@ -19,7 +20,7 @@ public class SearchByContentTest
     private TestAuditJsonObject v1, v2, v4;
     
     @Before
-    public void setUp()
+    public void setUp() throws AdminDBException
     {
         setUpGateway();
         gateway.trace(v1 = make().addMetadata("version", 1).withContent("{a:1}"));
@@ -64,22 +65,22 @@ public class SearchByContentTest
 
     private AuditGateway gateway;
     
-    private void setUpGateway()
+    private void setUpGateway() throws AdminDBException
     {
         gateway = gateway();
     }
     @After
-    public void tearDownGateway()
+    public void tearDownGateway() throws AdminDBException
     {
         gateway.db().drop();
     }
     
     @BeforeClass
-    public static void isAlive()
+    public static void isAlive() throws AdminDBException
     {
         Assume.assumeTrue(gateway().db().isAlive());
     }
-    private static AuditGateway gateway()
+    private static AuditGateway gateway() throws AdminDBException
     {
         return MongoAuditGatewayBuilder.db(AuditDBGatewayTest.class.getSimpleName()).build();
     }
