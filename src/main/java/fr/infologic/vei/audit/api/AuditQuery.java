@@ -2,6 +2,7 @@ package fr.infologic.vei.audit.api;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
@@ -38,6 +39,7 @@ public interface AuditQuery
         public TraceMetadataQueryBuilder fieldEqualsTo(String field, Object requestedValue);
         public TraceMetadataQueryBuilder fieldGreaterThan(String field, Object minValue);
         public TraceMetadataQueryBuilder fieldLessThan(String field, Object maxValue);
+        public TraceMetadataQueryBuilder fieldWithTypeDependantValue(String field, Function<String, Object> typeDependantFunction);
         public TraceQuery build();
     }
     

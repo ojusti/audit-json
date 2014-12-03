@@ -64,7 +64,8 @@ class MongoAllModificationsQuery extends AbstractMongoQueryBuilder implements Tr
 
     private List<MongoObject> traces(DBCollection collection)
     {
-        return toList(collection.getName(), collection.find(query.get(), traceProjection()));
+        String type = collection.getName();
+        return toList(type, collection.find(makeQueryForType(type), traceProjection()));
     }
 
     protected DBObject traceProjection()

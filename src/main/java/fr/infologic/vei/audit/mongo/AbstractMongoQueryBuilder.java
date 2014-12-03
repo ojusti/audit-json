@@ -3,9 +3,11 @@ package fr.infologic.vei.audit.mongo;
 import static com.mongodb.BasicDBObjectBuilder.start;
 import static fr.infologic.vei.audit.mongo.MongoObjectBuilder.and;
 
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBObject;
 
 import fr.infologic.vei.audit.api.AuditQuery.TraceMetadataQueryBuilder;
 import fr.infologic.vei.audit.api.AuditQuery.TraceQuery;
@@ -13,7 +15,13 @@ import fr.infologic.vei.audit.api.AuditQuery.TraceQueryBuilder;
 
 abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
 {
-    protected final BasicDBObjectBuilder query = start();
+    private final BasicDBObjectBuilder query = start();
+    private Function<String, DBObject> queryGenerator = type -> { return query.get(); };
+    
+    protected DBObject makeQueryForType(String type)
+    {
+        return queryGenerator.apply(type);
+    }
     
     @Override
     public TraceQueryBuilder havingKeyEqualsTo(String requestedKey)
@@ -27,6 +35,11 @@ abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
     {
         query.append(MongoObject.KEY, regExp);
         return this;
+    }
+    
+    protected void addToQuery(MongoObjectBuilder queryFragment)
+    {
+        queryFragment.addTo(query);
     }
     
     @Override
@@ -57,6 +70,12 @@ abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
             content.fieldLessThan(metadataField(field), maxValue);
             return this;
         }
+        @Override
+        public TraceMetadataQueryBuilder fieldWithTypeDependantValue(String field, Function<String, Object> typeDependantFunction)
+        {
+            queryGenerator = new QueryWithDependantCriteria(metadataField(field), typeDependantFunction);
+            return this;
+        }
         private String metadataField(String field)
         {
             return MongoObject.METADATA + "." + field;
@@ -64,8 +83,27 @@ abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
         @Override
         public TraceQuery build()
         {
-            content.addTo(AbstractMongoQueryBuilder.this.query);
+            addToQuery(content);
             return AbstractMongoQueryBuilder.this.build();
         }
+    }
+    
+    private class QueryWithDependantCriteria implements Function<String, DBObject>
+    {
+        final String field;
+        final Function<String, Object> function;
+
+        QueryWithDependantCriteria(String field, Function<String, Object> function)
+        {
+            this.field = field;
+            this.function = function;
+        }
+
+        @Override
+        public DBObject apply(String type)
+        {
+            return start(query.get().toMap()).add(field, function.apply(type)).get();
+        }
+        
     }
 }

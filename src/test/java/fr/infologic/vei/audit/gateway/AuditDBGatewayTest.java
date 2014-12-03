@@ -1,8 +1,10 @@
 package fr.infologic.vei.audit.gateway;
 
 import static fr.infologic.vei.audit.TestAuditJsonObject.make;
+import static java.util.function.Function.identity;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.junit.After;
@@ -67,7 +69,7 @@ public class AuditDBGatewayTest
     }
     
     @Test
-    public void traceAndQueryForADocumentWithRegExp()
+    public void searchDocumentsWithRegExp()
     {
         @SuppressWarnings("unused")
         TestAuditJsonObject v1, v2;
@@ -78,7 +80,17 @@ public class AuditDBGatewayTest
         TrailTraceAssert.assertThat(traces).containsExactly(v1.withContent(null));
     }
     
-    
+    @Test
+    public void searchDocumentsWithTypeDependantCriteria()
+    {
+        TestAuditJsonObject v1, v2;
+        gateway.trace(v1 = make().addMetadata("key1", "type").withContent(null));
+        gateway.trace(v2 = new TestAuditJsonObject("type1", "key1").addMetadata("key1", "type1").withContent(null));
+        gateway.trace(make().addMetadata("key1", "type1"));
+        
+        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().havingMetadata().fieldWithTypeDependantValue("key1", (Function) identity()).build().search();
+        TrailTraceAssert.assertThat(traces).containsExactly(v1, v2);
+    }
     
     @After
     public void tearDownDriver()
