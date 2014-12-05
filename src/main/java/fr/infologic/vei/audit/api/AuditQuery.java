@@ -24,7 +24,7 @@ public interface AuditQuery
     
     public interface TraceAllQueryBuilder
     {
-        TraceQueryBuilder ofAnyTypeInSet(Set<String> requestedTypes, Function<String, Object> typeDependantGroup);
+        TraceQueryBuilder ofAnyTypeInSet(Set<String> requestedTypes, Function<String, String> typeDependantGroup);
     }
     public interface TraceQueryBuilder
     {

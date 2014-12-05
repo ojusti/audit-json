@@ -17,7 +17,7 @@ abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
 {
     private final BasicDBObjectBuilder query = start();
     private final Function<String, DBObject> queryGenerator;
-    protected AbstractMongoQueryBuilder(Function<String, Object> typeDependantFunction)
+    protected AbstractMongoQueryBuilder(Function<String, String> typeDependantFunction)
     {
         this.queryGenerator = new QueryWithDependantCriteria(MongoObject.GROUP, typeDependantFunction);
     }
@@ -90,9 +90,9 @@ abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
     private class QueryWithDependantCriteria implements Function<String, DBObject>
     {
         final String field;
-        final Function<String, Object> function;
+        final Function<String, String> function;
 
-        QueryWithDependantCriteria(String field, Function<String, Object> function)
+        QueryWithDependantCriteria(String field, Function<String, String> function)
         {
             this.field = field;
             this.function = function;

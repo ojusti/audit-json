@@ -41,7 +41,7 @@ class MongoQueryDispatch implements TraceQueryDispatch, TraceFieldQueryBuilder, 
     }
     
     @Override
-    public TraceQueryBuilder ofAnyTypeInSet(Set<String> requestedTypes, Function<String, Object> typeDependantGroup)
+    public TraceQueryBuilder ofAnyTypeInSet(Set<String> requestedTypes, Function<String, String> typeDependantGroup)
     {
         return new MongoAllModificationsQuery(db, requestedTypes, typeDependantGroup);
     }

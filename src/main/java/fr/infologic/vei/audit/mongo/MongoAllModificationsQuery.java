@@ -22,7 +22,7 @@ class MongoAllModificationsQuery extends AbstractMongoQueryBuilder implements Tr
 {
     protected final DB db;
     private Set<String> requestedCollectionNames;
-    MongoAllModificationsQuery(DB db, Set<String> requestedTypes, Function<String, Object> typeDependantGroup)
+    MongoAllModificationsQuery(DB db, Set<String> requestedTypes, Function<String, String> typeDependantGroup)
     {
         super(typeDependantGroup);
         this.db = db;
