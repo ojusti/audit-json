@@ -3,7 +3,6 @@ package fr.infologic.vei.audit.gateway;
 import static fr.infologic.vei.audit.TestAuditJsonObject.make;
 import static java.util.function.Function.identity;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -55,7 +54,7 @@ public class AuditDBGatewayTest
         long timestamp = new Date().getTime();
         gateway.trace(v1 = make().addMetadata("date", new Timestamp(timestamp)));
 
-        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().havingMetadata().fieldLessThan("date", new Timestamp(timestamp + 1)).build().search();
+        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().ofAnyTypeInSet(null, null).havingMetadata().fieldLessThan("date", new Timestamp(timestamp + 1)).build().search();
         TrailTraceAssert.assertThat(traces).containsExactly(v1.withContent(null));
     }
     
@@ -79,7 +78,7 @@ public class AuditDBGatewayTest
         gateway.trace(v1 = make().addMetadata("key1", "value1").addMetadata("key2", "0value"));
         gateway.trace(v2 = make().addMetadata("key1", "value1").addMetadata("key2", "value2").withContent("{a:3}"));
         
-        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().havingMetadata().fieldEqualsTo("key1", "value1").fieldGreaterThan("key2", "value").build().search();
+        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().ofAnyTypeInSet(null, null).havingMetadata().fieldEqualsTo("key1", "value1").fieldGreaterThan("key2", "value").build().search();
         TrailTraceAssert.assertThat(traces).containsExactly(v2.withContent(null));
     }
     
@@ -89,9 +88,9 @@ public class AuditDBGatewayTest
         @SuppressWarnings("unused")
         TestAuditJsonObject v1, v2;
         gateway.trace(v1 = make().addMetadata("key1", "value1"));
-        gateway.trace(v2 = new TestAuditJsonObject("type", "0key").withContent("{a:3}"));
+        gateway.trace(v2 = new TestAuditJsonObject("type", "group", "0key").withContent("{a:3}"));
         
-        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().havingKeyMatches(Pattern.compile("^k")).build().search();
+        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().ofAnyTypeInSet(null, null).havingKeyMatches(Pattern.compile("^k")).build().search();
         TrailTraceAssert.assertThat(traces).containsExactly(v1.withContent(null));
     }
     
@@ -99,11 +98,11 @@ public class AuditDBGatewayTest
     public void searchDocumentsWithTypeDependantCriteria()
     {
         TestAuditJsonObject v1, v2;
-        gateway.trace(v1 = make().addMetadata("key1", "type").withContent(null));
-        gateway.trace(v2 = new TestAuditJsonObject("type1", "key1").addMetadata("key1", "type1").withContent(null));
+        gateway.trace(v1 = new TestAuditJsonObject("type", "type", "key1").addMetadata("key1", "type").withContent(null));
+        gateway.trace(v2 = new TestAuditJsonObject("type1", "type1", "key1").addMetadata("key1", "type1").withContent(null));
         gateway.trace(make().addMetadata("key1", "type1"));
         
-        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().havingMetadata().fieldWithTypeDependantValue("key1", (Function) identity()).build().search();
+        List<TrailTrace> traces = gateway.makeQuery().forAllModifications().ofAnyTypeInSet(null, (Function) identity()).havingMetadata().build().search();
         TrailTraceAssert.assertThat(traces).containsExactly(v1, v2);
     }
     

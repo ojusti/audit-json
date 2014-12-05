@@ -10,11 +10,11 @@ import fr.infologic.vei.audit.api.AuditQuery;
 
 public interface TrailEngine extends AuditQuery
 {
-    TrailType type(String type);
+    TrailType type(String type, String group);
     void save(TrailTrace trace);
     Content toContent(String object);
     
-    PatchableTrailFind find(String type, String key);
+    PatchableTrailFind find(String type, String group, String key);
     
     interface TrailRecord
     {

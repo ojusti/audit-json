@@ -28,6 +28,7 @@ class MongoObject implements PatchableTrailTrace
     static final String _ID = "_id";
     static final String VERSION = "version";
     static final String KEY = "key";
+    static final String GROUP = "group";
     static final String CONTENT = "content";
     static final String METADATA = "metadata";
     private final String type;
@@ -45,6 +46,12 @@ class MongoObject implements PatchableTrailTrace
         return type;
     }
 
+    @Override
+    public String getGroup()
+    {
+        return (String) object.get(GROUP);
+    }
+    
     @Override
     public String getKey()
     {
@@ -98,6 +105,7 @@ class MongoObject implements PatchableTrailTrace
         }
         TrailTrace o = (TrailTrace) other;
         return Objects.equals(getType(), o.getType())
+            && Objects.equals(getGroup(), o.getGroup())
             && Objects.equals(getKey(), o.getKey())
             && Objects.equals(getMetadata(), o.getMetadata())
             && Objects.equals(getContent(), o.getContent());
@@ -106,7 +114,7 @@ class MongoObject implements PatchableTrailTrace
     @Override
     public int hashCode()
     {
-        return Objects.hash(getType(), getKey(), getMetadata(), getContent());
+        return Objects.hash(getType(), getGroup(), getKey(), getMetadata(), getContent());
     }
 
     @Override
@@ -144,6 +152,7 @@ class MongoObject implements PatchableTrailTrace
             return ((MongoObject) trace).object;
         }
         return start(KEY, trace.getKey())
+                .add(GROUP, trace.getGroup())
                 .add(VERSION, trace.getVersion())
                 .add(CONTENT, convert(trace.getContent()))
                 .add(METADATA, start(trace.getMetadata()).get())
@@ -162,8 +171,8 @@ class MongoObject implements PatchableTrailTrace
     @Override
     public String asString()
     {
-        return String.format("AuditTrace [type=%s, key=%s, version=%d, metadata=%s, content=%s]",
-                      type, getKey(), getMetadata(), getVersion(), getContent().asString());
+        return String.format("AuditTrace [type=%s, group=%s, key=%s, version=%d, metadata=%s, content=%s]",
+                      type, getGroup(), getKey(), getMetadata(), getVersion(), getContent().asString());
     }
 
 }

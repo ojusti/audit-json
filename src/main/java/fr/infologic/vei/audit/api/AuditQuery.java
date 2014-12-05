@@ -19,12 +19,12 @@ public interface AuditQuery
     
     public interface TraceFieldQueryBuilder
     {
-        TraceQueryBuilder inType(String requestedType);
+        TraceQueryBuilder inType(String requestedType, String group);
     }
     
-    public interface TraceAllQueryBuilder extends TraceQueryBuilder
+    public interface TraceAllQueryBuilder
     {
-        TraceQueryBuilder ofAnyTypeInSet(Set<String> requestedTypes);
+        TraceQueryBuilder ofAnyTypeInSet(Set<String> requestedTypes, Function<String, Object> typeDependantGroup);
     }
     public interface TraceQueryBuilder
     {
@@ -39,7 +39,6 @@ public interface AuditQuery
         public TraceMetadataQueryBuilder fieldEqualsTo(String field, Object requestedValue);
         public TraceMetadataQueryBuilder fieldGreaterThan(String field, Object minValue);
         public TraceMetadataQueryBuilder fieldLessThan(String field, Object maxValue);
-        public TraceMetadataQueryBuilder fieldWithTypeDependantValue(String field, Function<String, Object> typeDependantFunction);
         public TraceQuery build();
     }
     

@@ -1,5 +1,8 @@
 package fr.infologic.vei.audit.mongo;
 
+import java.util.Set;
+import java.util.function.Function;
+
 import com.mongodb.DB;
 
 import fr.infologic.vei.audit.api.AuditQuery.TraceAllQueryBuilder;
@@ -7,7 +10,7 @@ import fr.infologic.vei.audit.api.AuditQuery.TraceFieldQueryBuilder;
 import fr.infologic.vei.audit.api.AuditQuery.TraceQueryBuilder;
 import fr.infologic.vei.audit.api.AuditQuery.TraceQueryDispatch;
 
-class MongoQueryDispatch implements TraceQueryDispatch, TraceFieldQueryBuilder
+class MongoQueryDispatch implements TraceQueryDispatch, TraceFieldQueryBuilder, TraceAllQueryBuilder
 {
 
     private DB db;
@@ -26,14 +29,20 @@ class MongoQueryDispatch implements TraceQueryDispatch, TraceFieldQueryBuilder
     }
     
     @Override
-    public TraceQueryBuilder inType(String requestedType)
+    public TraceQueryBuilder inType(String requestedType, String requestedGroup)
     {
-        return new MongoFieldModificationsQuery(db, requestedType, field);
+        return new MongoFieldModificationsQuery(db, requestedType, requestedGroup, field);
     }
 
     @Override
     public TraceAllQueryBuilder forAllModifications()
     {
-        return new MongoAllModificationsQuery(db);
+        return this;
+    }
+    
+    @Override
+    public TraceQueryBuilder ofAnyTypeInSet(Set<String> requestedTypes, Function<String, Object> typeDependantGroup)
+    {
+        return new MongoAllModificationsQuery(db, requestedTypes, typeDependantGroup);
     }
 }

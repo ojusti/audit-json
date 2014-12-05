@@ -2,6 +2,7 @@ package fr.infologic.vei.audit.mongo;
 
 import static com.mongodb.BasicDBObjectBuilder.start;
 import static fr.infologic.vei.audit.mongo.MongoObject.CONTENT;
+import static fr.infologic.vei.audit.mongo.MongoObject.GROUP;
 import static fr.infologic.vei.audit.mongo.MongoObject.KEY;
 import static fr.infologic.vei.audit.mongo.MongoObject.METADATA;
 import static fr.infologic.vei.audit.mongo.MongoObject.VERSION;
@@ -32,17 +33,19 @@ import fr.infologic.vei.audit.api.AuditQuery.TraceQueryBuilder;
 
 class MongoFieldModificationsQuery extends MongoAllModificationsQuery
 {
-    private String requestedType;
+    private final String requestedType;
+    private final String requestedGroup;
     private Object requestedKey;
-    private String field;
+    private final String field;
     private static final AggregationOptions USE_CURSOR = AggregationOptions.builder().outputMode(AggregationOptions.OutputMode.CURSOR).build();
     private static final String FIELD_IS_NULL = "isNull";
     
-    MongoFieldModificationsQuery(DB db, String requestedType, String field)
+    
+    MongoFieldModificationsQuery(DB db, String requestedType, String requestedGroup, String field)
     {
-        super(db);
-        ofAnyTypeInSet(singleton(requestedType));
+        super(db, singleton(requestedType), type -> { return requestedGroup; });
         this.requestedType = requestedType;
+        this.requestedGroup = requestedGroup;
         this.field = field;
     }
     
@@ -75,7 +78,7 @@ class MongoFieldModificationsQuery extends MongoAllModificationsQuery
     @Override
     protected DBObject traceProjection()
     {
-        return start(_ID, false).add(KEY, true).add(VERSION, true).add(METADATA, true).add(field(), true).get();
+        return start(_ID, false).add(GROUP, true).add(KEY, true).add(VERSION, true).add(METADATA, true).add(field(), true).get();
     }
     
     private static MongoObjectBuilder buildKeyQuery(Cursor it)
@@ -171,6 +174,10 @@ class MongoFieldModificationsQuery extends MongoAllModificationsQuery
         if(requestedKey != null)
         {
             match.add(KEY, requestedKey);
+        }
+        if(requestedGroup != null)
+        {
+            match.add(GROUP, requestedGroup);
         }
         return match.push(field()).add("$exists", true).get();
     }

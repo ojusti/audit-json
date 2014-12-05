@@ -8,6 +8,7 @@ import static fr.infologic.vei.audit.mongo.MongoObject.toObject;
 import java.util.List;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -17,11 +18,13 @@ import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailFind;
 class MongoFind implements PatchableTrailFind
 {
     private final DBCollection collection;
+    private final String group;
     private final String key;
 
-    MongoFind(DBCollection collection, String key)
+    MongoFind(DBCollection collection, String group, String key)
     {
         this.collection = collection;
+        this.group = group;
         this.key = key;
     }
 
@@ -50,7 +53,7 @@ class MongoFind implements PatchableTrailFind
 
     private DBCursor trail()
     {
-        return collection.find(eq(KEY, key));
+        return collection.find(BasicDBObjectBuilder.start(KEY, key).add(MongoObject.GROUP, group).get());
     }
 
     private static DBObject desc()

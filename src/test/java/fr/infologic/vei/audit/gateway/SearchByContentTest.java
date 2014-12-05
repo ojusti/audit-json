@@ -31,7 +31,7 @@ public class SearchByContentTest
     @Test
     public void searchADocumentByContent()
     {
-        List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type").build().search();
+        List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type", null).build().search();
         
         TrailTraceAssert.assertThat(traces).hasSize(3).containsExactly(v1, v2, v4);
     }
@@ -39,7 +39,7 @@ public class SearchByContentTest
     @Test
     public void searchADocumentByContentReturnsEmpty()
     {
-        List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type").havingMetadata().fieldEqualsTo("version", 3).build().search();
+        List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type", "group").havingMetadata().fieldEqualsTo("version", 3).build().search();
         
         TrailTraceAssert.assertThat(traces).isEmpty();
     }
@@ -47,7 +47,7 @@ public class SearchByContentTest
     @Test
     public void searchAMissingDocument()
     {
-        List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type").havingKeyEqualsTo("another").build().search();
+        List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type", "group").havingKeyEqualsTo("another").build().search();
         
         TrailTraceAssert.assertThat(traces).isEmpty();
     }
@@ -56,11 +56,22 @@ public class SearchByContentTest
     public void searchFindsTwoDocuments()
     {
         TestAuditJsonObject another;
-        gateway.trace(another = new TestAuditJsonObject("type", "another").addMetadata("version", "another").withContent("{a:1, b:2}"));
+        gateway.trace(another = new TestAuditJsonObject("type", null, "another").addMetadata("version", "another").withContent("{a:1, b:2}"));
 
-        List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type").build().search();
+        List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type", null).build().search();
         
         TrailTraceAssert.assertThat(traces).hasSize(4).containsExactly(v1, v2, v4, another.withContent("{a:1}"));
+    }
+    
+    @Test
+    public void searchFindsADocumentWithGroup()
+    {
+        TestAuditJsonObject another;
+        gateway.trace(another = new TestAuditJsonObject("type", "group", "another").addMetadata("version", "another").withContent("{a:1, b:2}"));
+
+        List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type", "group").build().search();
+        
+        TrailTraceAssert.assertThat(traces).hasSize(1).containsExactly(another.withContent("{a:1}"));
     }
 
     private AuditGateway gateway;

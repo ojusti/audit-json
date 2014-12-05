@@ -8,6 +8,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.mongodb.DB;
@@ -15,26 +16,19 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
 import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
-import fr.infologic.vei.audit.api.AuditQuery.TraceAllQueryBuilder;
 import fr.infologic.vei.audit.api.AuditQuery.TraceQuery;
-import fr.infologic.vei.audit.api.AuditQuery.TraceQueryBuilder;
 
-class MongoAllModificationsQuery extends AbstractMongoQueryBuilder implements TraceAllQueryBuilder, TraceQuery
+class MongoAllModificationsQuery extends AbstractMongoQueryBuilder implements TraceQuery
 {
     protected final DB db;
     private Set<String> requestedCollectionNames;
-    MongoAllModificationsQuery(DB db)
+    MongoAllModificationsQuery(DB db, Set<String> requestedTypes, Function<String, Object> typeDependantGroup)
     {
+        super(typeDependantGroup);
         this.db = db;
+        requestedCollectionNames = requestedTypes;
     }
     
-    @Override
-    public TraceQueryBuilder ofAnyTypeInSet(Set<String> requestedTypes)
-    {
-        requestedCollectionNames = requestedTypes;
-        return this;
-    }
-
     @Override
     public TraceQuery build()
     {

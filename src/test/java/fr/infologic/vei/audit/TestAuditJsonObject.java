@@ -14,16 +14,17 @@ import fr.infologic.vei.audit.mongo.json.MongoJson;
 public class TestAuditJsonObject extends AuditTrace implements PatchableTrailTrace
 {
     private MongoJson json;
-    public TestAuditJsonObject(String type, String key)
+    public TestAuditJsonObject(String type, String group, String key)
     {
         this.type = type;
+        this.group = group;
         this.key = key;
         withContent("{}");
         this.metadata = new HashMap<>();
     }
     public static TestAuditJsonObject make()
     {
-        return new TestAuditJsonObject("type", "key");
+        return new TestAuditJsonObject("type", null, "key");
     }
     public TestAuditJsonObject withContent(String content)
     {
@@ -65,6 +66,7 @@ public class TestAuditJsonObject extends AuditTrace implements PatchableTrailTra
         }
         TrailTrace o = (TrailTrace) other;
         return Objects.equals(getType(), o.getType())
+            && Objects.equals(getGroup(), o.getGroup()) 
             && Objects.equals(getKey(), o.getKey()) 
             && Objects.equals(getMetadata(), o.getMetadata()) 
             && Objects.equals(getContent(), o.getContent());   
@@ -73,13 +75,13 @@ public class TestAuditJsonObject extends AuditTrace implements PatchableTrailTra
     @Override
     public int hashCode()
     {
-        return Objects.hash(getType(), getKey(), getMetadata(), getContent());
+        return Objects.hash(getType(), getGroup(), getKey(), getMetadata(), getContent());
     }
     
     @Override
     public TestAuditJsonObject diff(Content original)
     {
-        TestAuditJsonObject diff = new TestAuditJsonObject(type, key);
+        TestAuditJsonObject diff = new TestAuditJsonObject(type, group, key);
         diff.metadata = metadata;
         diff.json = json.diff(original);
         diff.content = diff.json.asString();
@@ -89,7 +91,7 @@ public class TestAuditJsonObject extends AuditTrace implements PatchableTrailTra
     @Override
     public TestAuditJsonObject applyTo(Content original)
     {
-        TestAuditJsonObject merge = new TestAuditJsonObject(type, key);
+        TestAuditJsonObject merge = new TestAuditJsonObject(type, group, key);
         merge.metadata = metadata;
         merge.json = json.applyTo(original);
         merge.content = merge.json.asString();

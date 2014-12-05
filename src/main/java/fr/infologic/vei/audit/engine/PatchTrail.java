@@ -63,6 +63,12 @@ class PatchTrail implements Trail, TrailTrace, TrailRecord
     {
         return type.type;
     }
+    
+    @Override
+    public String getGroup()
+    {
+        return type.group;
+    }
 
     @Override
     public String getKey()

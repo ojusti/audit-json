@@ -38,9 +38,9 @@ public class MongoDB implements TrailEngine, AdminDB
     }
 
     @Override
-    public TrailType type(String type)
+    public TrailType type(String type, String group)
     {
-        return new TrailType(this, type);
+        return new TrailType(this, type, group);
     }
     
     @Override
@@ -56,9 +56,9 @@ public class MongoDB implements TrailEngine, AdminDB
     }
     
     @Override
-    public PatchableTrailFind find(String type, String key)
+    public PatchableTrailFind find(String type, String group, String key)
     {
-        return new MongoFind(db.getCollection(type), key);
+        return new MongoFind(db.getCollection(type), group, key);
     }
     
     @Override

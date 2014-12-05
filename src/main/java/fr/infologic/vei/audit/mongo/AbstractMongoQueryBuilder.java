@@ -16,7 +16,11 @@ import fr.infologic.vei.audit.api.AuditQuery.TraceQueryBuilder;
 abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
 {
     private final BasicDBObjectBuilder query = start();
-    private Function<String, DBObject> queryGenerator = type -> { return query.get(); };
+    private final Function<String, DBObject> queryGenerator;
+    protected AbstractMongoQueryBuilder(Function<String, Object> typeDependantFunction)
+    {
+        this.queryGenerator = new QueryWithDependantCriteria(MongoObject.GROUP, typeDependantFunction);
+    }
     
     protected DBObject makeQueryForType(String type)
     {
@@ -70,12 +74,7 @@ abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
             content.fieldLessThan(metadataField(field), maxValue);
             return this;
         }
-        @Override
-        public TraceMetadataQueryBuilder fieldWithTypeDependantValue(String field, Function<String, Object> typeDependantFunction)
-        {
-            queryGenerator = new QueryWithDependantCriteria(metadataField(field), typeDependantFunction);
-            return this;
-        }
+        
         private String metadataField(String field)
         {
             return MongoObject.METADATA + "." + field;
@@ -102,7 +101,7 @@ abstract class AbstractMongoQueryBuilder implements TraceQueryBuilder
         @Override
         public DBObject apply(String type)
         {
-            return start(query.get().toMap()).add(field, function.apply(type)).get();
+            return start(query.get().toMap()).add(field, function == null ? null : function.apply(type)).get();
         }
         
     }

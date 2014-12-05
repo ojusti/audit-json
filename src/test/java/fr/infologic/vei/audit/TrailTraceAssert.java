@@ -35,6 +35,12 @@ public class TrailTraceAssert extends ObjectAssert<TrailTrace>
         return this;
     }
 
+    public TrailTraceAssert hasGroup(String group)
+    {
+        Assertions.assertThat(actual.getGroup()).isEqualTo(group);
+        return this;
+    }
+    
     public TrailTraceAssert hasType(String type)
     {
         Assertions.assertThat(actual.getType()).isEqualTo(type);
@@ -60,7 +66,7 @@ public class TrailTraceAssert extends ObjectAssert<TrailTrace>
     
     public TrailTraceAssert isEqualTo(TrailTrace expected)
     {
-        return hasType(expected.getType()).hasKey(expected.getKey()).hasMetadata(expected.getMetadata()).hasContent(expected.getContent());
+        return hasType(expected.getType()).hasGroup(expected.getGroup()).hasKey(expected.getKey()).hasMetadata(expected.getMetadata()).hasContent(expected.getContent());
     }
     public static class TrailTraceListAssert extends ListAssert<TrailTrace>
     {
@@ -74,7 +80,9 @@ public class TrailTraceAssert extends ObjectAssert<TrailTrace>
                 {
                     TrailTrace a = (TrailTrace) actual;
                     TrailTrace o = (TrailTrace) other;
-                    return Objects.areEqual(a.getKey(), o.getKey()) && Objects.areEqual(a.getType(), o.getType())
+                    return Objects.areEqual(a.getKey(), o.getKey()) 
+                        && Objects.areEqual(a.getGroup(), o.getGroup())
+                        && Objects.areEqual(a.getType(), o.getType())
                         && Objects.areEqual(a.getMetadata().entrySet(), o.getMetadata().entrySet()) 
                         && Objects.areEqual(a.getContent(), o.getContent());   
                 }

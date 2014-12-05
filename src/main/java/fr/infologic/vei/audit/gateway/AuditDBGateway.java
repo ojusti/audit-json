@@ -29,7 +29,7 @@ class AuditDBGateway implements AuditGateway
 
     private Trail trailFor(TrailKey key)
     {
-        return engine.type(key.getType()).trail(key.getKey());
+        return engine.type(key.getType(), key.getGroup()).trail(key.getKey());
     }
 
     @Override
