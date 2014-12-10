@@ -1,5 +1,7 @@
 package fr.infologic.vei.audit.mongo;
 
+import static com.mongodb.BasicDBObjectBuilder.start;
+import static fr.infologic.vei.audit.mongo.MongoObject.GROUP;
 import static fr.infologic.vei.audit.mongo.MongoObject.KEY;
 import static fr.infologic.vei.audit.mongo.MongoObject.VERSION;
 import static fr.infologic.vei.audit.mongo.MongoObject.toList;
@@ -8,7 +10,6 @@ import static fr.infologic.vei.audit.mongo.MongoObject.toObject;
 import java.util.List;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -18,14 +19,12 @@ import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailFind;
 class MongoFind implements PatchableTrailFind
 {
     private final DBCollection collection;
-    private final String group;
-    private final String key;
+    private final DBObject key;
 
     MongoFind(DBCollection collection, String group, String key)
     {
         this.collection = collection;
-        this.group = group;
-        this.key = key;
+        this.key = start(KEY, key).add(GROUP, group).get();
     }
 
     @Override
@@ -51,6 +50,13 @@ class MongoFind implements PatchableTrailFind
     {
         return trail().count();
     }
+    
+    @Override
+    public void delete()
+    {
+        collection.remove(key);
+        
+    }
 
     private DBObject lastTrace()
     {
@@ -59,7 +65,7 @@ class MongoFind implements PatchableTrailFind
 
     private DBCursor trail()
     {
-        return collection.find(BasicDBObjectBuilder.start(KEY, key).add(MongoObject.GROUP, group).get());
+        return collection.find(key);
     }
 
     private static DBObject desc()

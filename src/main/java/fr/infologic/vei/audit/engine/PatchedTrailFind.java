@@ -46,6 +46,12 @@ public class PatchedTrailFind implements TrailFind
     {
         return find.count();
     }
+    
+    @Override
+    public void delete()
+    {
+        find.delete();
+    }
 
     private static boolean containsPatches(List<? extends PatchableTrailTrace> content)
     {

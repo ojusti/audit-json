@@ -15,6 +15,7 @@ public interface AuditFind
         List<? extends TrailTrace> allFromVersion(int minVersion);
         
         int count();
+        void delete();
     }
     public interface TrailTrace extends TrailTraceKey
     {
