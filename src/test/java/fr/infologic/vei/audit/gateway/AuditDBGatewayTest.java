@@ -93,6 +93,7 @@ public class AuditDBGatewayTest
         gateway.trace(make().withContent("{a:1}"));
         gateway.trace(make().withContent("{a:2,b:3}"));
         TrailKey key = make();
+        Assertions.assertThat(gateway.db().count()).isEqualTo(2);
         Assertions.assertThat(gateway.find(key).count()).isEqualTo(2);
         gateway.find(key).delete();
         Assertions.assertThat(gateway.find(key).count()).isEqualTo(0);

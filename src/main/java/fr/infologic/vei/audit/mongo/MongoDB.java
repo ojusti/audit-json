@@ -107,5 +107,11 @@ public class MongoDB implements TrailEngine, AdminDB
             return false;
         }
     }
+
+    @Override
+    public int count()
+    {
+        return (int) (db.getStats().getLong("objects") - db.getCollection("system.indexes").count() - db.getCollection("system.namespaces").count() - db.getCollection("system.users").count());
+    }
    
 }

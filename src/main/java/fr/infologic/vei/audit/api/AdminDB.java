@@ -4,6 +4,7 @@ public interface AdminDB
 {
     void drop() throws AdminDBException;
     void close() throws AdminDBException;
+    int count();
     boolean isAlive();
     
     class AdminDBException extends Exception
@@ -13,4 +14,5 @@ public interface AdminDB
             super(cause);
         }
     }
+
 }
