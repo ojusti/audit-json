@@ -49,6 +49,21 @@ public class AuditDBGatewayTest
     }
     
     @Test
+    public void ingestDocuments()
+    {
+        TestAuditJsonObject v1, v2;
+        gateway.ingest(v2 = make().withContent("{b:2}").addMetadata("key1", "value1"), 2);
+        gateway.ingest(v1 = make().withContent("{a:1}").addMetadata("key", "value"), 1);
+
+        TrailKey key = make();
+        TrailTrace trace = gateway.find(key).last();
+        TrailTraceAssert.assertThat(trace).isEqualTo(v2);
+        
+        List<? extends TrailTrace> persisted = gateway.find(key).all();
+        TrailTraceAssert.assertThat(persisted).containsExactly(v1.withContent("{a:1,b:2}"), v2);
+    }
+    
+    @Test
     public void searchADocumentUsingTimestamps()
     {
         TestAuditJsonObject v1;

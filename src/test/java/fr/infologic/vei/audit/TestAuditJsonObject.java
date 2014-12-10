@@ -37,6 +37,7 @@ public class TestAuditJsonObject extends AuditTrace implements PatchableTrailTra
         this.metadata.put(key, value);
         return this;
     }
+    
     @Override
     public int getVersion()
     {

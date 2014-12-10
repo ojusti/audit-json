@@ -26,6 +26,14 @@ class AuditDBGateway implements AuditGateway
                        .setMetadata(trace.metadata)
                        .save();
     }
+    
+    @Override
+    public void ingest(AuditTrace patch, int version)
+    {
+        trailFor(patch).setContent(engine.toContent(patch.content))
+                       .setMetadata(patch.metadata)
+                       .ingest(version);
+    }
 
     private Trail trailFor(TrailKey key)
     {
@@ -49,4 +57,6 @@ class AuditDBGateway implements AuditGateway
     {
         return engine.makeQuery();
     }
+
+    
 }

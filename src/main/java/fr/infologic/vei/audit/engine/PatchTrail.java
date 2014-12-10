@@ -51,6 +51,13 @@ class PatchTrail implements Trail, TrailTrace, TrailRecord
         }
         type.save(this);
     }
+    
+    @Override
+    public void ingest(int version)
+    {
+        this.version = version;
+        type.save(this);
+    }
 
     @Override
     public PatchableTrailFind find()

@@ -20,6 +20,7 @@ public interface TrailEngine extends AuditQuery
     {
         TrailRecord setMetadata(Map<String, Object> metadata);
         void save();
+        void ingest(int version);
     }
     interface PatchableTrailFind extends TrailFind
     {
