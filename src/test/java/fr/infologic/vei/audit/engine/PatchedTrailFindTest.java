@@ -49,7 +49,7 @@ public class PatchedTrailFindTest
     }
     private List trailOf(String[] content)
     {
-        List trail = Arrays.stream(content).map(json -> make().withContent(json)).collect(Collectors.toList());
+        List trail = Arrays.stream(content).map(make()::withContent).collect(Collectors.toList());
         trail.add(make().withContent(current[0])); 
         return trail;
     }

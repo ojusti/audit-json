@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
@@ -68,6 +69,8 @@ public class AuditDBGatewayTest
         TrailKey key = v1;
         List<? extends TrailTrace> persisted = gateway.find(key).all();
         TrailTraceAssert.assertThat(persisted).containsExactly(v1, v2);
+        
+        Assertions.assertThat(gateway.find(key).count()).isEqualTo(2);
     }
     
     @Test

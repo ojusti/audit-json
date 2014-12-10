@@ -45,6 +45,12 @@ class MongoFind implements PatchableTrailFind
     {
         return toList(collection.getName(), trail().skip(minVersion - 1).sort(asc()));
     }
+    
+    @Override
+    public int count()
+    {
+        return trail().count();
+    }
 
     private DBObject lastTrace()
     {

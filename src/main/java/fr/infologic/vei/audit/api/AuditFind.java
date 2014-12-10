@@ -13,6 +13,8 @@ public interface AuditFind
         /** shortcut from allFromVersion(1) */
         List<? extends TrailTrace> all();
         List<? extends TrailTrace> allFromVersion(int minVersion);
+        
+        int count();
     }
     public interface TrailTrace extends TrailTraceKey
     {

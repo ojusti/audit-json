@@ -40,6 +40,12 @@ public class PatchedTrailFind implements TrailFind
         }
         return content;
     }
+    
+    @Override
+    public int count()
+    {
+        return find.count();
+    }
 
     private static boolean containsPatches(List<? extends PatchableTrailTrace> content)
     {
@@ -64,5 +70,4 @@ public class PatchedTrailFind implements TrailFind
     {
         return content.get(content.size() - 1).getContent();
     }
-
 }
