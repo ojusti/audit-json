@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import fr.infologic.vei.audit.api.AuditFind.Content;
 import fr.infologic.vei.audit.api.AuditFind.TrailTrace;
+import fr.infologic.vei.audit.api.AuditIngestTrace;
 import fr.infologic.vei.audit.api.AuditTrace;
 import fr.infologic.vei.audit.engine.TrailEngine.PatchableTrailTrace;
 import fr.infologic.vei.audit.mongo.json.MongoJson;
@@ -102,5 +103,16 @@ public class TestAuditJsonObject extends AuditTrace implements PatchableTrailTra
     public String asString()
     {
         return toString();
+    }
+    public AuditIngestTrace asVersion(int version)
+    {
+        AuditIngestTrace result = new AuditIngestTrace();
+        result.key = key;
+        result.group = group;
+        result.type = type;
+        result.metadata = metadata;
+        result.content = json;
+        result.version = version;
+        return result;
     }
 }

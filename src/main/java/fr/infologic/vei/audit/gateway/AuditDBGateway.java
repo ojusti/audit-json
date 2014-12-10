@@ -1,6 +1,7 @@
 package fr.infologic.vei.audit.gateway;
 
 import fr.infologic.vei.audit.api.AdminDB;
+import fr.infologic.vei.audit.api.AuditIngestTrace;
 import fr.infologic.vei.audit.api.AuditTrace;
 import fr.infologic.vei.audit.api.TrailKey;
 import fr.infologic.vei.audit.engine.PatchedTrailFind;
@@ -28,11 +29,11 @@ class AuditDBGateway implements AuditGateway
     }
     
     @Override
-    public void ingest(AuditTrace patch, int version)
+    public void ingest(AuditIngestTrace patch)
     {
-        trailFor(patch).setContent(engine.toContent(patch.content))
+        trailFor(patch).setContent(patch.content)
                        .setMetadata(patch.metadata)
-                       .ingest(version);
+                       .ingest(patch.version);
     }
 
     private Trail trailFor(TrailKey key)

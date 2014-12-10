@@ -52,8 +52,8 @@ public class AuditDBGatewayTest
     public void ingestDocuments()
     {
         TestAuditJsonObject v1, v2;
-        gateway.ingest(v2 = make().withContent("{b:2}").addMetadata("key1", "value1"), 2);
-        gateway.ingest(v1 = make().withContent("{a:1}").addMetadata("key", "value"), 1);
+        gateway.ingest((v2 = make().withContent("{b:2}").addMetadata("key1", "value1")).asVersion(2));
+        gateway.ingest((v1 = make().withContent("{a:1}").addMetadata("key", "value")).asVersion(1));
 
         TrailKey key = make();
         TrailTrace trace = gateway.find(key).last();
