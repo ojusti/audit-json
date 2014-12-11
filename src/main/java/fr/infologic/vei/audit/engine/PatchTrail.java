@@ -49,7 +49,7 @@ class PatchTrail implements Trail, TrailTrace, TrailRecord
             this.version = lastTrace.getVersion() + 1;
             type.save(lastTrace.diff(getContent()));
         }
-        type.save(this);
+        ingest(this.version);
     }
     
     @Override

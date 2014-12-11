@@ -60,7 +60,7 @@ public class SearchByContentTest
 
         List<TrailTrace> traces = gateway.makeQuery().forModificationsOf("a").inType("type", null).build().search();
         
-        TrailTraceAssert.assertThat(traces).hasSize(4).containsExactly(v1, v2, v4, another.withContent("{a:1}"));
+        TrailTraceAssert.assertThat(traces).hasSize(4).containsOnly(v1, v2, v4, another.withContent("{a:1}"));
     }
     
     @Test

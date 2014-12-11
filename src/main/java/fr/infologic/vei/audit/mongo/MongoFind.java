@@ -20,11 +20,13 @@ class MongoFind implements PatchableTrailFind
 {
     private final DBCollection collection;
     private final DBObject key;
+    private final DBObject index;
 
     MongoFind(DBCollection collection, String group, String key)
     {
         this.collection = collection;
-        this.key = start(KEY, key).add(GROUP, group).get();
+        this.key = start(GROUP, group).add(KEY, key).get();
+        this.index = start(GROUP, 1).add(KEY, 1).get();
     }
 
     @Override
@@ -65,6 +67,7 @@ class MongoFind implements PatchableTrailFind
 
     private DBCursor trail()
     {
+        collection.createIndex(index);
         return collection.find(key);
     }
 
